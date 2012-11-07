@@ -10,12 +10,18 @@
 
 #import "CVCLRevolverLayout.h"
 
+
+@interface CVCLRevolverLayoutAxisView : UICollectionReusableView
+@end
+
 @interface CVCLRevolverLayout () 
 
 @property (nonatomic, readonly) NSInteger count;
 @property (nonatomic, readonly) UIEdgeInsets layoutInsets;
 
 @end
+
+#pragma mark -
 
 @implementation CVCLRevolverLayout {
     CGFloat _centerRateThreshold;
@@ -52,6 +58,7 @@
 - (void)setInitialValues {
     self.cellSize = CGSizeMake(320, 50);
     self.cellInterval = self.cellSize.height;
+    [self registerClass:[CVCLRevolverLayoutAxisView class] forDecorationViewOfKind:@"Axis"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -105,17 +112,26 @@
     return array;
 }
 
+- (UICollectionViewLayoutAttributes *)axisDecorationViewLayoutAttributes {
+    UICollectionViewLayoutAttributes *decrationViewAttr = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:@"Axis" withIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+    CGFloat centerY = self.collectionView.contentOffset.y + self.collectionView.bounds.size.height / 2 - self.cellSize.height / 2;
+    decrationViewAttr.size = CGSizeMake(100, 100);
+    decrationViewAttr.center = CGPointMake(0, centerY);
+    decrationViewAttr.zIndex = self.count;
+    return decrationViewAttr;
+}
+
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
     for (NSIndexPath *indexPath in [self arrayOfIndexicesInRect:rect]) {
         [array addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
     }
     
-    UICollectionViewLayoutAttributes *decrationViewAttr = [self layoutAttributesForDecorationViewOfKind:@"Axis" atIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-
-    CGFloat centerY = self.collectionView.contentOffset.y + self.collectionView.bounds.size.height / 2 - self.cellSize.height / 2;
-    decrationViewAttr.center = CGPointMake(0, centerY);
-    decrationViewAttr.zIndex = self.count;
+    UICollectionViewLayoutAttributes *decrationViewAttr;
+    decrationViewAttr = [self axisDecorationViewLayoutAttributes];
+    
+    [array addObject:decrationViewAttr];
     
     return array;
 }
@@ -207,4 +223,13 @@
     return 0; // cos(rate * M_PI_4) * self.collectionView.bounds.size.height / 2;
 }
 
+@end
+
+
+#pragma mark - DecorationView
+
+@implementation CVCLRevolverLayoutAxisView
++ (void)initialize {
+    LOG(@"initialize");
+}
 @end

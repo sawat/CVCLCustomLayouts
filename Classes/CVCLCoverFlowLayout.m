@@ -129,7 +129,7 @@
 }
 
 - (void)updateCenterRateThreshold:(CGRect)newBounds {
-    _centerRateThreshold = _cellInterval / newBounds.size.width;
+    _centerRateThreshold = _cellInterval / self.collectionView.bounds.size.width;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
