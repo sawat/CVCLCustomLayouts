@@ -10,4 +10,6 @@
 
 @interface CoverFlowViewController : UICollectionViewController
 
+@property (nonatomic, strong) UICollectionViewLayout *layout;
+
 @end

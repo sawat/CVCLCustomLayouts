@@ -7,10 +7,15 @@
 //
 
 #import "MasterViewController.h"
+#import "CVCLCoverFlowLayout.h"
+#import "CoverFlowViewController.h"
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
 }
+
+@property (nonatomic, strong) NSArray * layouts;
+
 @end
 
 @implementation MasterViewController
@@ -28,12 +33,31 @@
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
+    
+    self.layouts = @[
+        [[CVCLCoverFlowLayout alloc] init],
+        [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)],
+        [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)],
+    ];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - 
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"showCollectionView" sender:self];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
+    
+    CoverFlowViewController *dest = segue.destinationViewController;
+    dest.layout = self.layouts[ selected.row % self.layouts.count];
 }
 
 @end

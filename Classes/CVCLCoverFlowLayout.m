@@ -30,6 +30,24 @@
     return self;
 }
 
+- (id)initWithCellSize:(CGSize)cellSize {
+    self = [self init];
+    if (self) {
+        self.cellSize = cellSize;
+        self.cellInterval = self.cellSize.width / 3;
+    }
+    return self;
+}
+
+- (id)initWithCellSize:(CGSize)cellSize cellInterval:(CGFloat)cellInterval {
+    self = [self init];
+    if (self) {
+        self.cellSize = cellSize;
+        self.cellInterval = cellInterval;
+    }
+    return self;
+}
+
 - (void)setInitialValues {
     self.cellSize = CGSizeMake(100, 100);
     self.cellInterval = self.cellSize.width / 3;

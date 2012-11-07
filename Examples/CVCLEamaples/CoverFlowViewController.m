@@ -12,8 +12,6 @@
 
 @interface CoverFlowViewController () <UICollectionViewDelegateFlowLayout>
 
-@property (weak, nonatomic) IBOutlet CVCLCoverFlowLayout *coverFlowLayout;
-
 @end
 
 @implementation CoverFlowViewController
@@ -32,8 +30,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.coverFlowLayout.cellSize = CGSizeMake(120, 80);
-    self.coverFlowLayout.cellInterval = 20;
+    if (self.layout) {
+        [self.collectionView setCollectionViewLayout:self.layout animated:NO];
+    }
 }
 
 - (void)didReceiveMemoryWarning

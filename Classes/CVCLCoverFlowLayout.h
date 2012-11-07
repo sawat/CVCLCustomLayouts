@@ -13,4 +13,7 @@
 @property (nonatomic, assign) CGSize cellSize;
 @property (nonatomic, assign) CGFloat cellInterval;
 
+- (id)initWithCellSize:(CGSize)cellSize;
+- (id)initWithCellSize:(CGSize)cellSize cellInterval:(CGFloat)cellInterval;
+
 @end
