@@ -40,6 +40,8 @@
 			<false/>
 		</dict>
 	</dict>
+	<key>UIViewEdgeAntialiasing</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

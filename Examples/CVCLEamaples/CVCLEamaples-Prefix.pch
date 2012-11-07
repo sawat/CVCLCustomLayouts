@@ -12,3 +12,20 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+//// DEBUG LOG ////
+#ifdef DEBUG
+
+#define LOG(...) NSLog(__VA_ARGS__)
+#define LOG_METHOD NSLog(@"%s", __func__);
+#define LOG_RETAIN_COUNT(tag, obj) NSLog(@"RetainCount %@: %ld", tag, CFGetRetainCount((__bridge CFTypeRef)obj));
+#define LOG_RC(obj) NSLog(@"RetainCount %@: %ld", @#obj, CFGetRetainCount((__bridge CFTypeRef)obj));
+
+#else
+
+#define LOG(...) ;
+#define LOG_METHOD ;
+#define LOG_RETAIN_COUNT(tag, obj) ;
+#define LOG_RC(obj) ;
+
+#endif

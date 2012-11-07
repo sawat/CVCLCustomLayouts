@@ -7,8 +7,9 @@
 //
 
 #import "MasterViewController.h"
-#import "CVCLCoverFlowLayout.h"
 #import "CoverFlowViewController.h"
+#import "CVCLCoverFlowLayout.h"
+#import "CVCLRevolverLayout.h"
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
@@ -34,10 +35,13 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
-    self.layouts = @[
-        [[CVCLCoverFlowLayout alloc] init],
-        [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)],
-        [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)],
+    self.layouts = @[@[
+            [[CVCLCoverFlowLayout alloc] init],
+            [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)],
+            [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)],
+        ], @[
+            [[CVCLRevolverLayout alloc] init],
+        ]
     ];
 }
 
@@ -57,7 +61,7 @@
     NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
     
     CoverFlowViewController *dest = segue.destinationViewController;
-    dest.layout = self.layouts[ selected.row % self.layouts.count];
+    dest.layout = self.layouts[selected.section][selected.row];
 }
 
 @end
