@@ -95,7 +95,7 @@
     return (self.collectionViewContentSize.height - insets.top - insets.bottom) / self.count;
 }
 
-- (NSArray *)arrayOfIndexicesInRect:(CGRect)rect {
+- (NSArray *)indexPathsForItemsInRect:(CGRect)rect {
     if (self.count == 0) return [NSArray array];
     
     CGFloat cw = [self cellsVerticalInterval];
@@ -123,7 +123,7 @@
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
-    for (NSIndexPath *indexPath in [self arrayOfIndexicesInRect:rect]) {
+    for (NSIndexPath *indexPath in [self indexPathsForItemsInRect:rect]) {
         [array addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
     }
     

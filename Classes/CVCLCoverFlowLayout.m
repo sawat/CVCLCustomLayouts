@@ -142,7 +142,7 @@
     return (self.collectionViewContentSize.width - insets.left - insets.right) / self.count;
 }
 
-- (NSArray *)arrayOfIndexicesInRect:(CGRect)rect {
+- (NSArray *)indexPathsForItemsInRect:(CGRect)rect {
     CGFloat cw = [self cellsHorizontalInterval];
     NSInteger minRow = MAX(0, (NSInteger)floor((rect.origin.x - self.layoutInsets.left) / cw));
 
@@ -160,7 +160,7 @@
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
     int section = NSNotFound;
-    for (NSIndexPath *indexPath in [self arrayOfIndexicesInRect:rect]) {
+    for (NSIndexPath *indexPath in [self indexPathsForItemsInRect:rect]) {
         if (indexPath.section != section) {
             [array addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath]];
             [array addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:indexPath]];
