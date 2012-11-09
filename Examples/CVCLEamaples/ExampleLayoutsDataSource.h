@@ -16,4 +16,5 @@
 - (void) applyLayoutWithCollectionView:(UICollectionView *)collectionView atIndexPath:(NSIndexPath *)indexPath animation:(BOOL)animation;
 - (NSIndexPath *)nextIndexPath:(NSIndexPath *)indexPath;
 - (NSIndexPath *)previousIndexPath:(NSIndexPath *)indexPath;
+- (NSString *)titleForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end

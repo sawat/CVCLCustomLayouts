@@ -8,6 +8,7 @@
 
 #import "CoverFlowViewController.h"
 #import "MyCollectionViewCell.h"
+#import "MyHeaderView.h"
 #import "ExampleLayoutsDataSource.h"
 
 @interface CoverFlowViewController () <UICollectionViewDelegateFlowLayout>
@@ -50,6 +51,7 @@
     [[ExampleLayoutsDataSource sharedInstance] applyLayoutWithCollectionView:self.collectionView atIndexPath:indexPath animation:animation];
     
     [self.collectionView.collectionViewLayout invalidateLayout];
+    self.title = [[ExampleLayoutsDataSource sharedInstance] titleForRowAtIndexPath:self.layoutIndexPath];
 
 }
 
@@ -66,7 +68,7 @@
 
 #pragma mark - 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -79,6 +81,19 @@
     CGFloat hue = (CGFloat)indexPath.row / [self collectionView:collectionView numberOfItemsInSection:indexPath.section];
     cell.titleLabel.backgroundColor = [UIColor colorWithHue:hue saturation:0.5 brightness:1.0 alpha:1.0];
     return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        MyHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"Header" forIndexPath:indexPath];
+        header.titleLabel.text = [NSString stringWithFormat:@"Section-%d", indexPath.section];
+        return header;
+    } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        MyHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"Footer" forIndexPath:indexPath];
+        header.titleLabel.text = [NSString stringWithFormat:@"Footer-%d", indexPath.section];
+        return header;
+    }
+    return nil;
 }
 
 

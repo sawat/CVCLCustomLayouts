@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		7827984D164A3994000E82DE /* CVCLRevolverLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7827984C164A3994000E82DE /* CVCLRevolverLayout.m */; };
 		785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */; };
+		785E2B77164CD64900DF48E1 /* CVCLHomeIconLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */; };
+		785E2B7A164CDA8000DF48E1 /* MyHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B79164CDA8000DF48E1 /* MyHeaderView.m */; };
 		87EB1F39164981E900452E64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F38164981E900452E64 /* UIKit.framework */; };
 		87EB1F3B164981E900452E64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3A164981E900452E64 /* Foundation.framework */; };
 		87EB1F3D164981E900452E64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3C164981E900452E64 /* CoreGraphics.framework */; };
@@ -31,6 +33,10 @@
 		7827984C164A3994000E82DE /* CVCLRevolverLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLRevolverLayout.m; sourceTree = "<group>"; };
 		785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleLayoutsDataSource.h; sourceTree = "<group>"; };
 		785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleLayoutsDataSource.m; sourceTree = "<group>"; };
+		785E2B75164CD64900DF48E1 /* CVCLHomeIconLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVCLHomeIconLayout.h; sourceTree = "<group>"; };
+		785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLHomeIconLayout.m; sourceTree = "<group>"; };
+		785E2B78164CDA8000DF48E1 /* MyHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyHeaderView.h; sourceTree = "<group>"; };
+		785E2B79164CDA8000DF48E1 /* MyHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyHeaderView.m; sourceTree = "<group>"; };
 		87EB1F34164981E900452E64 /* CVCLEamaples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CVCLEamaples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87EB1F38164981E900452E64 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		87EB1F3A164981E900452E64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -107,6 +113,8 @@
 				87EB1F641649830F00452E64 /* CoverFlowViewController.m */,
 				87EB1F651649830F00452E64 /* MyCollectionViewCell.h */,
 				87EB1F661649830F00452E64 /* MyCollectionViewCell.m */,
+				785E2B78164CDA8000DF48E1 /* MyHeaderView.h */,
+				785E2B79164CDA8000DF48E1 /* MyHeaderView.m */,
 				87EB1F47164981E900452E64 /* AppDelegate.h */,
 				87EB1F48164981E900452E64 /* AppDelegate.m */,
 				87EB1F50164981E900452E64 /* MainStoryboard.storyboard */,
@@ -140,6 +148,8 @@
 				7827984C164A3994000E82DE /* CVCLRevolverLayout.m */,
 				87EB1F6A164983CF00452E64 /* CVCLCoverFlowLayout.h */,
 				87EB1F6B164983CF00452E64 /* CVCLCoverFlowLayout.m */,
+				785E2B75164CD64900DF48E1 /* CVCLHomeIconLayout.h */,
+				785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -219,6 +229,8 @@
 				87EB1F6C164983CF00452E64 /* CVCLCoverFlowLayout.m in Sources */,
 				7827984D164A3994000E82DE /* CVCLRevolverLayout.m in Sources */,
 				785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */,
+				785E2B77164CD64900DF48E1 /* CVCLHomeIconLayout.m in Sources */,
+				785E2B7A164CDA8000DF48E1 /* MyHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -111,13 +111,11 @@
 }
 
 - (NSIndexPath *)nextIndexPath:(NSIndexPath *)indexPath {
-    LOG(@"indexPath:[%d, %d]", indexPath.section, indexPath.row);
+
     if (indexPath.row + 1 == [self.collectionView numberOfItemsInSection:indexPath.section]) {
         if (indexPath.section + 1 == [self.collectionView numberOfSections]) {
-            LOG(@"No more rows.");
             return nil;
         } else {
-            LOG(@"Next Section:[%d, %d]", indexPath.section+1, 0);
             return [NSIndexPath indexPathForRow:0 inSection:indexPath.section+1];
         }
     } else {
@@ -151,21 +149,23 @@
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
     UIEdgeInsets insets = self.layoutInsets;
     NSIndexPath *indexPath = [self indexPathOfTotalIndex:minRow];
-    LOG(@"indexPath:[%d, %d]", indexPath.section, indexPath.row);
     
     for (int i=minRow; indexPath && (i-1) * cw - insets.left < rect.origin.x + rect.size.width; i++) {
         [array addObject:indexPath];
         indexPath = [self nextIndexPath:indexPath];
-        if (indexPath.row < 0 || indexPath.row > 100) {
-            LOG(@"Warning!!!");
-        }
     }
     return array;
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
+    int section = NSNotFound;
     for (NSIndexPath *indexPath in [self arrayOfIndexicesInRect:rect]) {
+        if (indexPath.section != section) {
+            [array addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath]];
+            [array addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:indexPath]];
+            section = indexPath.section;
+        }
         [array addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
     }
     return array;
@@ -187,6 +187,38 @@
     attr.frame = frame;
 
     attr.transform3D = [self transformWithCellOffsetX:cellOffsetX];
+    
+    return attr;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
+
+    CGRect frame;
+    frame.size = CGSizeMake(self.collectionView.bounds.size.width, 30);
+    frame.origin.x = self.collectionView.contentOffset.x;
+    frame.origin.y = [kind isEqualToString:UICollectionElementKindSectionHeader] ? 0 : self.collectionView.bounds.size.height - frame.size.height;
+    
+    NSInteger totalIndex  = [self.sectionIndexTable[indexPath.section] intValue];
+    CGFloat sectionX = totalIndex * [self cellsHorizontalInterval] + self.layoutInsets.left;
+    // セクション0のヘッダーは左詰め、それ以外はセクションの開始位置を考慮する
+    if (indexPath.section != 0 && frame.origin.x < sectionX) {
+        frame.origin.x = sectionX;
+    }
+
+    NSInteger next  = [self.sectionIndexTable[indexPath.section+1] intValue];
+    CGFloat nextSectionX = next * [self cellsHorizontalInterval] + self.layoutInsets.left;
+    // 次のセクションが画面に入っている場合
+    if (indexPath.section != self.collectionView.numberOfSections-1 && frame.origin.x + frame.size.width > nextSectionX) {
+        // 
+        if (frame.origin.x == sectionX) {
+            frame.size.width -= frame.origin.x + frame.size.width - nextSectionX;
+        } else {
+            frame.origin.x -= frame.origin.x + frame.size.width - nextSectionX;
+        }
+    }
+    
+    attr.frame = frame;
     
     return attr;
 }

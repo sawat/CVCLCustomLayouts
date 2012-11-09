@@ -39,8 +39,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - 
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+#pragma mark -
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self performSegueWithIdentifier:@"showCollectionView" sender:self];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -51,5 +51,6 @@
     CoverFlowViewController *dest = segue.destinationViewController;
     [dest setLayoutAtIndexPath:selected];
 }
+
 
 @end

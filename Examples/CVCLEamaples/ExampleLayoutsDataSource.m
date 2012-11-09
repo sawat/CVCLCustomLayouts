@@ -37,6 +37,11 @@ static NSString * const kPaging = @"paging";
     layout.scrollDirection = scrollDirection;
     layout.itemSize =itemSize;
     layout.minimumInteritemSpacing = minimumLineSpacing;
+    
+    if (scrollDirection == UICollectionViewScrollDirectionVertical) {
+        layout.headerReferenceSize = CGSizeMake(320, 30);
+        layout.footerReferenceSize = CGSizeMake(320, 60);
+    }
     return layout;
 }
 
@@ -90,7 +95,9 @@ static NSString * const kPaging = @"paging";
 
 - (NSIndexPath *)previousIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
-        return [NSIndexPath indexPathForRow:0 inSection:((indexPath.section + self.sections.count - 1) % self.sections.count)];
+        NSInteger newSection = indexPath.section != 0 ? indexPath.section - 1 : self.sections.count - 1;
+        NSInteger newRows = [[[self.sections objectAtIndex:newSection] objectForKey:kRows] count];
+        return [NSIndexPath indexPathForRow:newRows-1 inSection:newSection];
     } else {
         return [NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
     }
