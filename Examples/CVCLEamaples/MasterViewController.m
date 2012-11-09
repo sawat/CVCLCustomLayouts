@@ -7,6 +7,7 @@
 //
 
 #import "MasterViewController.h"
+#import "ExampleLayoutsDataSource.h"
 #import "CoverFlowViewController.h"
 #import "CVCLCoverFlowLayout.h"
 #import "CVCLRevolverLayout.h"
@@ -15,19 +16,9 @@
     NSMutableArray *_objects;
 }
 
-@property (nonatomic, strong) NSArray * layouts;
-
 @end
 
 @implementation MasterViewController
-
-+ (UICollectionViewFlowLayout *)flowLayoutWithItemSize:(CGSize)itemSize minimumLineSpacing:(CGFloat)minimumLineSpacing scrollDirection:(UICollectionViewScrollDirection)scrollDirection {
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.scrollDirection = scrollDirection;
-    layout.itemSize =itemSize;
-    layout.minimumInteritemSpacing = minimumLineSpacing;
-    return layout;
-}
 
 - (void)awakeFromNib
 {
@@ -38,23 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
     
-    self.layouts = @[@[
-            [MasterViewController flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical],
-            [MasterViewController flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:5 scrollDirection:UICollectionViewScrollDirectionHorizontal],
-        ], @[
-            [[CVCLCoverFlowLayout alloc] init],
-            [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)],
-            [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)],
-        ], @[
-            [[CVCLRevolverLayout alloc] init],
-        ]
-    ];
+    self.tableView.dataSource = [ExampleLayoutsDataSource sharedInstance];
 }
 
 - (void)didReceiveMemoryWarning
@@ -73,7 +49,7 @@
     NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
     
     CoverFlowViewController *dest = segue.destinationViewController;
-    dest.layout = self.layouts[selected.section][selected.row];
+    [dest setLayoutAtIndexPath:selected];
 }
 
 @end

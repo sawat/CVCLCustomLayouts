@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) UICollectionViewLayout *layout;
 
+- (void) setLayoutAtIndexPath:(NSIndexPath *)indexPath;
+
 @end

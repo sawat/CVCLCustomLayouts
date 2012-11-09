@@ -8,10 +8,10 @@
 
 #import "CoverFlowViewController.h"
 #import "MyCollectionViewCell.h"
-#import "CVCLCoverFlowLayout.h"
+#import "ExampleLayoutsDataSource.h"
 
 @interface CoverFlowViewController () <UICollectionViewDelegateFlowLayout>
-
+@property (nonatomic, copy) NSIndexPath *layoutIndexPath;
 @end
 
 @implementation CoverFlowViewController
@@ -41,13 +41,38 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) setLayoutAtIndexPath:(NSIndexPath *)indexPath {
+    [self setLayoutAtIndexPath:indexPath animation:NO];
+}
+
+- (void) setLayoutAtIndexPath:(NSIndexPath *)indexPath animation:(BOOL)animation {
+    self.layoutIndexPath = indexPath;
+    [[ExampleLayoutsDataSource sharedInstance] applyLayoutWithCollectionView:self.collectionView atIndexPath:indexPath animation:animation];
+    
+    [self.collectionView.collectionViewLayout invalidateLayout];
+
+}
+
+- (IBAction)handleTapSegmentControl:(id)sender {
+    UISegmentedControl *seg = sender;
+    NSIndexPath *newIndexPath = nil;
+    if (seg.selectedSegmentIndex == 0) {
+        newIndexPath = [[ExampleLayoutsDataSource sharedInstance] previousIndexPath:self.layoutIndexPath];
+    } else {
+        newIndexPath = [[ExampleLayoutsDataSource sharedInstance] nextIndexPath:self.layoutIndexPath];
+    }
+    [self setLayoutAtIndexPath:newIndexPath animation:YES];
+}
+
 #pragma mark - 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return 30;
 }
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
     cell.titleLabel.text = [NSString stringWithFormat:@"%d-%d", indexPath.section, indexPath.row];
@@ -56,20 +81,6 @@
     return cell;
 }
 
-- (IBAction)handleFlowLayout:(id)sender {
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    
-    [self.collectionView setCollectionViewLayout:layout animated:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectionView setContentOffset:CGPointZero animated:NO];
-    });
-}
-- (IBAction)handleCoverflow:(id)sender {
-    [self.collectionView setCollectionViewLayout:[[CVCLCoverFlowLayout alloc] init] animated:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectionView setContentOffset:CGPointZero animated:NO];
-    });
-}
 
 #pragma mark -
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

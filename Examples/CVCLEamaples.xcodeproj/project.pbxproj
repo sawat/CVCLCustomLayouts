@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7827984D164A3994000E82DE /* CVCLRevolverLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7827984C164A3994000E82DE /* CVCLRevolverLayout.m */; };
+		785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */; };
 		87EB1F39164981E900452E64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F38164981E900452E64 /* UIKit.framework */; };
 		87EB1F3B164981E900452E64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3A164981E900452E64 /* Foundation.framework */; };
 		87EB1F3D164981E900452E64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3C164981E900452E64 /* CoreGraphics.framework */; };
@@ -28,6 +29,8 @@
 /* Begin PBXFileReference section */
 		7827984B164A3994000E82DE /* CVCLRevolverLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVCLRevolverLayout.h; sourceTree = "<group>"; };
 		7827984C164A3994000E82DE /* CVCLRevolverLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLRevolverLayout.m; sourceTree = "<group>"; };
+		785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleLayoutsDataSource.h; sourceTree = "<group>"; };
+		785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleLayoutsDataSource.m; sourceTree = "<group>"; };
 		87EB1F34164981E900452E64 /* CVCLEamaples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CVCLEamaples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87EB1F38164981E900452E64 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		87EB1F3A164981E900452E64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -109,6 +112,8 @@
 				87EB1F50164981E900452E64 /* MainStoryboard.storyboard */,
 				87EB1F53164981E900452E64 /* MasterViewController.h */,
 				87EB1F54164981E900452E64 /* MasterViewController.m */,
+				785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */,
+				785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */,
 				87EB1F3F164981E900452E64 /* Supporting Files */,
 			);
 			path = CVCLEamaples;
@@ -213,6 +218,7 @@
 				87EB1F681649830F00452E64 /* MyCollectionViewCell.m in Sources */,
 				87EB1F6C164983CF00452E64 /* CVCLCoverFlowLayout.m in Sources */,
 				7827984D164A3994000E82DE /* CVCLRevolverLayout.m in Sources */,
+				785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
