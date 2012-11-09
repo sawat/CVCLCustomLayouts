@@ -12,4 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
+- (void)setColor:(UIColor *)color;
+
 @end

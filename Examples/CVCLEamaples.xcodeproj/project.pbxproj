@@ -11,6 +11,7 @@
 		785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */; };
 		785E2B77164CD64900DF48E1 /* CVCLHomeIconLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */; };
 		785E2B7A164CDA8000DF48E1 /* MyHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B79164CDA8000DF48E1 /* MyHeaderView.m */; };
+		785E2B7D164D0A9B00DF48E1 /* MyIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B7C164D0A9B00DF48E1 /* MyIconCell.m */; };
 		87EB1F39164981E900452E64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F38164981E900452E64 /* UIKit.framework */; };
 		87EB1F3B164981E900452E64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3A164981E900452E64 /* Foundation.framework */; };
 		87EB1F3D164981E900452E64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EB1F3C164981E900452E64 /* CoreGraphics.framework */; };
@@ -37,6 +38,8 @@
 		785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLHomeIconLayout.m; sourceTree = "<group>"; };
 		785E2B78164CDA8000DF48E1 /* MyHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyHeaderView.h; sourceTree = "<group>"; };
 		785E2B79164CDA8000DF48E1 /* MyHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyHeaderView.m; sourceTree = "<group>"; };
+		785E2B7B164D0A9B00DF48E1 /* MyIconCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyIconCell.h; sourceTree = "<group>"; };
+		785E2B7C164D0A9B00DF48E1 /* MyIconCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyIconCell.m; sourceTree = "<group>"; };
 		87EB1F34164981E900452E64 /* CVCLEamaples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CVCLEamaples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87EB1F38164981E900452E64 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		87EB1F3A164981E900452E64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -115,6 +118,8 @@
 				87EB1F661649830F00452E64 /* MyCollectionViewCell.m */,
 				785E2B78164CDA8000DF48E1 /* MyHeaderView.h */,
 				785E2B79164CDA8000DF48E1 /* MyHeaderView.m */,
+				785E2B7B164D0A9B00DF48E1 /* MyIconCell.h */,
+				785E2B7C164D0A9B00DF48E1 /* MyIconCell.m */,
 				87EB1F47164981E900452E64 /* AppDelegate.h */,
 				87EB1F48164981E900452E64 /* AppDelegate.m */,
 				87EB1F50164981E900452E64 /* MainStoryboard.storyboard */,
@@ -231,6 +236,7 @@
 				785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */,
 				785E2B77164CD64900DF48E1 /* CVCLHomeIconLayout.m in Sources */,
 				785E2B7A164CDA8000DF48E1 /* MyHeaderView.m in Sources */,
+				785E2B7D164D0A9B00DF48E1 /* MyIconCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,6 +31,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    self.toolbarItems = @[self.editButtonItem];
+    
     if (self.layout) {
         [self.collectionView setCollectionViewLayout:self.layout animated:NO];
     }
@@ -48,12 +50,28 @@
 
 - (void) setLayoutAtIndexPath:(NSIndexPath *)indexPath animation:(BOOL)animation {
     self.layoutIndexPath = indexPath;
-    [[ExampleLayoutsDataSource sharedInstance] applyLayoutWithCollectionView:self.collectionView atIndexPath:indexPath animation:animation];
     
-    [self.collectionView.collectionViewLayout invalidateLayout];
+    ExampleLayoutsDataSource *dataSource = [ExampleLayoutsDataSource sharedInstance];
+
+    NSString *oldCellId = self.cellIdentifier;
+    NSString *newCellId = [dataSource cellIdentifierAtIndexPath:indexPath];
+    
+    UICollectionViewLayout *layout = [dataSource layoutAtIndexPath:indexPath];
+    [self.collectionView setCollectionViewLayout:layout animated:animation];
+    self.collectionView.pagingEnabled = [dataSource pageEnabledAtIndexPath:indexPath];
+    self.cellIdentifier = newCellId;
+    
     self.title = [[ExampleLayoutsDataSource sharedInstance] titleForRowAtIndexPath:self.layoutIndexPath];
+    
+    if (![newCellId isEqualToString:oldCellId]) {
+        [self.collectionView reloadData];
+    } else {
+        [self.collectionView.collectionViewLayout invalidateLayout];
+    }
 
 }
+
+
 
 - (IBAction)handleTapSegmentControl:(id)sender {
     UISegmentedControl *seg = sender;
@@ -76,23 +94,29 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    MyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+    
+    MyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellIdentifier forIndexPath:indexPath];
+
     cell.titleLabel.text = [NSString stringWithFormat:@"%d-%d", indexPath.section, indexPath.row];
     CGFloat hue = (CGFloat)indexPath.row / [self collectionView:collectionView numberOfItemsInSection:indexPath.section];
-    cell.titleLabel.backgroundColor = [UIColor colorWithHue:hue saturation:0.5 brightness:1.0 alpha:1.0];
+    [cell setColor:[UIColor colorWithHue:hue saturation:0.5 brightness:1.0 alpha:1.0]];
+    
     return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         MyHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"Header" forIndexPath:indexPath];
         header.titleLabel.text = [NSString stringWithFormat:@"Section-%d", indexPath.section];
         return header;
+    
     } else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
         MyHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"Footer" forIndexPath:indexPath];
         header.titleLabel.text = [NSString stringWithFormat:@"Footer-%d", indexPath.section];
         return header;
     }
+    
     return nil;
 }
 

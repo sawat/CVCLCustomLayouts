@@ -9,12 +9,14 @@
 #import "ExampleLayoutsDataSource.h"
 #import "CVCLCoverFlowLayout.h"
 #import "CVCLRevolverLayout.h"
+#import "CVCLHomeIconLayout.h"
 
 static NSString * const kSectionTitle = @"sectionTitle";
 static NSString * const kRows = @"rows";
 static NSString * const kRowTitle = @"rowTitle";
 static NSString * const kLayout = @"layout";
 static NSString * const kPaging = @"paging";
+static NSString * const kCellIdentifier = @"cellId";
 
 @interface ExampleLayoutsDataSource ()
 @property (nonatomic, strong) NSArray *sections;
@@ -49,6 +51,10 @@ static NSString * const kPaging = @"paging";
 {
     self = [super init];
     if (self) {
+        CVCLHomeIconLayout *iconLayout2 = [[CVCLHomeIconLayout alloc] init];
+        iconLayout2.headerHeight = 30;
+        iconLayout2.footerHeight = 40;
+        
         self.sections = @[
         @{kSectionTitle : @"FlowLayout",
     kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal], kPaging:@YES}],
@@ -58,6 +64,10 @@ static NSString * const kPaging = @"paging";
         },
         @{kSectionTitle : @"Revolver",
     kRows: @[ @{kRowTitle:@"Revolver 1", kLayout:[[CVCLRevolverLayout alloc] init]}],
+        },
+        @{kSectionTitle : @"Homescreen Icons",
+    kRows: @[ @{kRowTitle:@"Icons", kLayout:[[CVCLHomeIconLayout alloc] init], kCellIdentifier:@"IconCell", kPaging:@YES},
+        @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell", kPaging:@YES}],
         },
         ];
     }
@@ -76,13 +86,19 @@ static NSString * const kPaging = @"paging";
     return [[self layoutDictAtIndexPath:indexPath] objectForKey:kRowTitle];
 }
 
-- (void) applyLayoutWithCollectionView:(UICollectionView *)collectionView atIndexPath:(NSIndexPath *)indexPath animation:(BOOL)animation {
-    LOG(@"applyLayout: %@", indexPath);
-    NSDictionary *dict = [self layoutDictAtIndexPath:indexPath];
-    
-    [collectionView setCollectionViewLayout:[dict objectForKey:kLayout] animated:animation];
-    collectionView.pagingEnabled = [[dict objectForKey:kPaging] boolValue];
+- (NSString *)cellIdentifierAtIndexPath:(NSIndexPath *)indexPath {
+    return [[self layoutDictAtIndexPath:indexPath] objectForKey:kCellIdentifier] ?: @"Cell";
 }
+
+- (BOOL)pageEnabledAtIndexPath:(NSIndexPath *)indexPath {
+    return [[[self layoutDictAtIndexPath:indexPath] objectForKey:kPaging] boolValue];
+}
+
+- (UICollectionViewLayout *)layoutAtIndexPath:(NSIndexPath *)indexPath {
+    return [[self layoutDictAtIndexPath:indexPath] objectForKey:kLayout];
+}
+
+#pragma mark -
 
 - (NSIndexPath *)nextIndexPath:(NSIndexPath *)indexPath {
     NSInteger currentRows = [[[self.sections objectAtIndex:indexPath.section] objectForKey:kRows] count];

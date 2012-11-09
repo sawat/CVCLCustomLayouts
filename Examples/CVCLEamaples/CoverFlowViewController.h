@@ -11,6 +11,7 @@
 @interface CoverFlowViewController : UICollectionViewController
 
 @property (nonatomic, strong) UICollectionViewLayout *layout;
+@property (nonatomic, copy) NSString *cellIdentifier;
 
 - (void) setLayoutAtIndexPath:(NSIndexPath *)indexPath;
 
