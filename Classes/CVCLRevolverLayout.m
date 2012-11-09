@@ -24,7 +24,6 @@
 #pragma mark -
 
 @implementation CVCLRevolverLayout {
-    CGFloat _centerRateThreshold;
     CGFloat _rotationRadius;
 }
 
@@ -147,8 +146,8 @@
     CGFloat centerY = self.collectionView.contentOffset.y + self.collectionView.bounds.size.height / 2 - self.cellSize.height / 2;
     
     CGRect frame;
-    frame.origin.y = centerY + sin(rate * M_PI_2) * _rotationRadius;
-    frame.origin.x = cos(rate * M_PI_2) * _rotationRadius - self.collectionView.bounds.size.width / 2;
+    frame.origin.y = centerY + sin(rate * M_PI_2) * _rotationRadius - self.cellSize.height / 2;
+    frame.origin.x = cos(rate * M_PI_2) * _rotationRadius - self.cellSize.width / 2;
     frame.size = self.cellSize;
     
     attr.frame = frame;
@@ -162,7 +161,6 @@
 - (void)updateCenterRateThreshold:(CGRect)newBounds {
     CGSize size = self.collectionView.bounds.size;
     _rotationRadius = MIN(size.width, size.height) / 2;
-    _centerRateThreshold = _cellInterval / newBounds.size.height;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
@@ -212,15 +210,15 @@
 }
 
 - (CGFloat)translateXForDistanceRate:(CGFloat)rate {
-    return 0; // cos(rate * M_PI_4) * self.collectionView.bounds.size.height / 2 - self.collectionView.bounds.size.height / 2;
+    return 0;
 }
 
 - (CGFloat)translateYForDistanceRate:(CGFloat)rate {
-    return 0; // 2 * sin(rate * M_PI_4) * self.cellSize.height;
+    return 0;
 }
 
 - (CGFloat)translateZForDistanceRate:(CGFloat)rate {
-    return 0; // cos(rate * M_PI_4) * self.collectionView.bounds.size.height / 2;
+    return 0;
 }
 
 @end
@@ -232,4 +230,23 @@
 + (void)initialize {
     LOG(@"initialize");
 }
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setBackgroundColor:[UIColor clearColor]];
+        self.opaque = NO;
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
+    CGContextFillEllipseInRect(context, rect);
+    
+}
+
 @end

@@ -21,10 +21,19 @@
 
 @implementation MasterViewController
 
++ (UICollectionViewFlowLayout *)flowLayoutWithItemSize:(CGSize)itemSize minimumLineSpacing:(CGFloat)minimumLineSpacing scrollDirection:(UICollectionViewScrollDirection)scrollDirection {
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.scrollDirection = scrollDirection;
+    layout.itemSize =itemSize;
+    layout.minimumInteritemSpacing = minimumLineSpacing;
+    return layout;
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
 }
+
 
 - (void)viewDidLoad
 {
@@ -36,6 +45,9 @@
     self.navigationItem.rightBarButtonItem = addButton;
     
     self.layouts = @[@[
+            [MasterViewController flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical],
+            [MasterViewController flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:5 scrollDirection:UICollectionViewScrollDirectionHorizontal],
+        ], @[
             [[CVCLCoverFlowLayout alloc] init],
             [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)],
             [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)],
