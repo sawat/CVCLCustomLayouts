@@ -14,11 +14,13 @@
 
 @property (nonatomic, readonly) NSInteger count;
 @property (nonatomic, readonly) UIEdgeInsets layoutInsets;
+@property (nonatomic, strong) NSArray *sectionIndexTable;
 
 @end
 
 @implementation CVCLCoverFlowLayout {
     CGFloat _centerRateThreshold;
+    NSInteger _count;
 }
 
 - (id)init
@@ -58,11 +60,69 @@
     if (self) {
         [self setInitialValues];
     }
-    return self;    
+    return self;
+}
+
+- (void)prepareLayout {
+    [self updateCenterRateThreshold:self.collectionView.bounds];
+    [self prepareSectionIndexTable];
+}
+
+- (void)prepareSectionIndexTable {
+    int count = 0;
+    int sn = self.collectionView.numberOfSections;
+    NSMutableArray *table = [NSMutableArray arrayWithCapacity:sn+1];
+    
+    for (int i=0; i<sn; i++) {
+        [table addObject:@(count)];
+        count += [self.collectionView numberOfItemsInSection:i];
+    }
+    [table addObject:@(count)];
+    _count = count;
+    self.sectionIndexTable = table;
+    LOG(@"table: %@", self.sectionIndexTable);
 }
 
 - (NSInteger)count {
-    return [self.collectionView numberOfItemsInSection:0];
+    return _count;
+}
+
+- (NSInteger)totalIndexOfIndexPath:(NSIndexPath *)indexPath {
+    return [self.sectionIndexTable[indexPath.section] intValue] + indexPath.row;
+}
+- (NSInteger)sectionOfTotalIndex:(NSInteger)totalIndex {
+    int section = 0;
+    for (NSNumber *ti in self.sectionIndexTable) {
+        if (ti.intValue > totalIndex) {
+            return section - 1;
+        }
+        section++;
+    }
+    return NSNotFound;
+}
+- (NSIndexPath *)indexPathOfTotalIndex:(NSInteger)totalIndex {
+    NSInteger section = [self sectionOfTotalIndex:totalIndex];
+    
+    if (section == NSNotFound) {
+        return nil;
+    }
+    
+    return [NSIndexPath indexPathForRow:(totalIndex-[self.sectionIndexTable[section] intValue]) inSection:section];
+}
+
+- (NSIndexPath *)nextIndexPath:(NSIndexPath *)indexPath {
+    LOG(@"indexPath:[%d, %d]", indexPath.section, indexPath.row);
+    if (indexPath.row + 1 == [self.collectionView numberOfItemsInSection:indexPath.section]) {
+        if (indexPath.section + 1 == [self.collectionView numberOfSections]) {
+            LOG(@"No more rows.");
+            return nil;
+        } else {
+            LOG(@"Next Section:[%d, %d]", indexPath.section+1, 0);
+            return [NSIndexPath indexPathForRow:0 inSection:indexPath.section+1];
+        }
+    } else {
+        return [NSIndexPath indexPathForRow:indexPath.row+1 inSection:indexPath.section];
+    }
 }
 
 - (UIEdgeInsets) layoutInsets {
@@ -79,10 +139,6 @@
     return size;
 }
 
-- (void)prepareLayout {
-    [self updateCenterRateThreshold:self.collectionView.bounds];
-}
-
 - (CGFloat)cellsHorizontalInterval {
     UIEdgeInsets insets = self.layoutInsets;
     return (self.collectionViewContentSize.width - insets.left - insets.right) / self.count;
@@ -94,8 +150,15 @@
 
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
     UIEdgeInsets insets = self.layoutInsets;
-    for (int i=minRow, cn = self.count; i < cn && (i-1) * cw - insets.left < rect.origin.x + rect.size.width; i++) {
-        [array addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+    NSIndexPath *indexPath = [self indexPathOfTotalIndex:minRow];
+    LOG(@"indexPath:[%d, %d]", indexPath.section, indexPath.row);
+    
+    for (int i=minRow; indexPath && (i-1) * cw - insets.left < rect.origin.x + rect.size.width; i++) {
+        [array addObject:indexPath];
+        indexPath = [self nextIndexPath:indexPath];
+        if (indexPath.row < 0 || indexPath.row > 100) {
+            LOG(@"Warning!!!");
+        }
     }
     return array;
 }
@@ -114,7 +177,7 @@
     
     CGFloat cw = [self cellsHorizontalInterval];
     
-    CGFloat cellOffsetX = indexPath.row * cw + self.layoutInsets.left;
+    CGFloat cellOffsetX = [self totalIndexOfIndexPath:indexPath] * cw + self.layoutInsets.left;
     
     CGRect frame;
     frame.origin.x = cellOffsetX;
