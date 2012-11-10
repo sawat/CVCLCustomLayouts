@@ -24,6 +24,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     LOG_METHOD;
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
 
+    [[UINavigationBar appearance] setTintColor:[UIColor lightGrayColor]];
+    [[UIToolbar appearance] setTintColor:[UIColor darkGrayColor]];
+    
     return YES;
 }
 							

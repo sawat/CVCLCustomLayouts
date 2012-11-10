@@ -22,7 +22,7 @@
 		87EB1F4D164981E900452E64 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 87EB1F4C164981E900452E64 /* Default@2x.png */; };
 		87EB1F4F164981E900452E64 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 87EB1F4E164981E900452E64 /* Default-568h@2x.png */; };
 		87EB1F52164981E900452E64 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87EB1F50164981E900452E64 /* MainStoryboard.storyboard */; };
-		87EB1F55164981E900452E64 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EB1F54164981E900452E64 /* MasterViewController.m */; };
+		87EB1F55164981E900452E64 /* ExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EB1F54164981E900452E64 /* ExampleViewController.m */; };
 		87EB1F671649830F00452E64 /* CoverFlowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EB1F641649830F00452E64 /* CoverFlowViewController.m */; };
 		87EB1F681649830F00452E64 /* MyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EB1F661649830F00452E64 /* MyCollectionViewCell.m */; };
 		87EB1F6C164983CF00452E64 /* CVCLCoverFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EB1F6B164983CF00452E64 /* CVCLCoverFlowLayout.m */; };
@@ -54,8 +54,8 @@
 		87EB1F4C164981E900452E64 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		87EB1F4E164981E900452E64 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		87EB1F51164981E900452E64 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		87EB1F53164981E900452E64 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		87EB1F54164981E900452E64 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		87EB1F53164981E900452E64 /* ExampleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleViewController.h; sourceTree = "<group>"; };
+		87EB1F54164981E900452E64 /* ExampleViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController.m; sourceTree = "<group>"; };
 		87EB1F631649830F00452E64 /* CoverFlowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverFlowViewController.h; sourceTree = "<group>"; };
 		87EB1F641649830F00452E64 /* CoverFlowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverFlowViewController.m; sourceTree = "<group>"; };
 		87EB1F651649830F00452E64 /* MyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyCollectionViewCell.h; sourceTree = "<group>"; };
@@ -123,8 +123,8 @@
 				87EB1F47164981E900452E64 /* AppDelegate.h */,
 				87EB1F48164981E900452E64 /* AppDelegate.m */,
 				87EB1F50164981E900452E64 /* MainStoryboard.storyboard */,
-				87EB1F53164981E900452E64 /* MasterViewController.h */,
-				87EB1F54164981E900452E64 /* MasterViewController.m */,
+				87EB1F53164981E900452E64 /* ExampleViewController.h */,
+				87EB1F54164981E900452E64 /* ExampleViewController.m */,
 				785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */,
 				785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */,
 				87EB1F3F164981E900452E64 /* Supporting Files */,
@@ -228,7 +228,7 @@
 			files = (
 				87EB1F45164981E900452E64 /* main.m in Sources */,
 				87EB1F49164981E900452E64 /* AppDelegate.m in Sources */,
-				87EB1F55164981E900452E64 /* MasterViewController.m in Sources */,
+				87EB1F55164981E900452E64 /* ExampleViewController.m in Sources */,
 				87EB1F671649830F00452E64 /* CoverFlowViewController.m in Sources */,
 				87EB1F681649830F00452E64 /* MyCollectionViewCell.m in Sources */,
 				87EB1F6C164983CF00452E64 /* CVCLCoverFlowLayout.m in Sources */,

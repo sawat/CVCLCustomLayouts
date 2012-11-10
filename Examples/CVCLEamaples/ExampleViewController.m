@@ -6,19 +6,19 @@
 //  Copyright (c) 2012年 沢 辰洋. All rights reserved.
 //
 
-#import "MasterViewController.h"
+#import "ExampleViewController.h"
 #import "ExampleLayoutsDataSource.h"
 #import "CoverFlowViewController.h"
 #import "CVCLCoverFlowLayout.h"
 #import "CVCLRevolverLayout.h"
 
-@interface MasterViewController () {
+@interface ExampleViewController () {
     NSMutableArray *_objects;
 }
 
 @end
 
-@implementation MasterViewController
+@implementation ExampleViewController
 
 - (void)awakeFromNib
 {
