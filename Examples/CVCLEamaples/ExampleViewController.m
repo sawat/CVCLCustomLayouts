@@ -101,6 +101,8 @@
     CGFloat hue = (CGFloat)indexPath.row / [self collectionView:collectionView numberOfItemsInSection:indexPath.section];
     [cell setColor:[UIColor colorWithHue:hue saturation:0.5 brightness:1.0 alpha:1.0]];
     
+    [cell setEditing:self.editing animated:NO];
+    
     return cell;
 }
 
@@ -120,6 +122,14 @@
     return nil;
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    
+    [super setEditing:editing animated:animated];
+    
+    for (MyCollectionViewCell *cell in [self.collectionView visibleCells]) {
+        [cell setEditing:editing animated:animated];
+    }
+}
 
 #pragma mark -
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

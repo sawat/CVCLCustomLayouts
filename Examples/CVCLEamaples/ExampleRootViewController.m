@@ -6,9 +6,9 @@
 //  Copyright (c) 2012年 沢 辰洋. All rights reserved.
 //
 
+#import "ExampleViewController.h"
 #import "ExampleRootViewController.h"
 #import "ExampleLayoutsDataSource.h"
-#import "CoverFlowViewController.h"
 #import "CVCLCoverFlowLayout.h"
 #import "CVCLRevolverLayout.h"
 
@@ -48,7 +48,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NSIndexPath *selected = [self.tableView indexPathForSelectedRow];
     
-    CoverFlowViewController *dest = segue.destinationViewController;
+    ExampleViewController *dest = segue.destinationViewController;
     [dest setLayoutAtIndexPath:selected];
 }
 

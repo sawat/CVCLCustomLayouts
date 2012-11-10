@@ -11,7 +11,9 @@
 @interface MyCollectionViewCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (readonly) BOOL editing;
 
 - (void)setColor:(UIColor *)color;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated;
 
 @end

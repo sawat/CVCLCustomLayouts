@@ -112,8 +112,6 @@
 		87EB1F3E164981E900452E64 /* CVCLEamaples */ = {
 			isa = PBXGroup;
 			children = (
-				87EB1F631649830F00452E64 /* ExampleViewController.h */,
-				87EB1F78164EC87F00452E64 /* ExampleViewController.m */,
 				87EB1F651649830F00452E64 /* MyCollectionViewCell.h */,
 				87EB1F661649830F00452E64 /* MyCollectionViewCell.m */,
 				785E2B78164CDA8000DF48E1 /* MyHeaderView.h */,
@@ -123,10 +121,12 @@
 				87EB1F47164981E900452E64 /* AppDelegate.h */,
 				87EB1F48164981E900452E64 /* AppDelegate.m */,
 				87EB1F50164981E900452E64 /* MainStoryboard.storyboard */,
-				87EB1F53164981E900452E64 /* ExampleRootViewController.h */,
-				87EB1F54164981E900452E64 /* ExampleRootViewController.m */,
 				785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */,
 				785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */,
+				87EB1F53164981E900452E64 /* ExampleRootViewController.h */,
+				87EB1F54164981E900452E64 /* ExampleRootViewController.m */,
+				87EB1F631649830F00452E64 /* ExampleViewController.h */,
+				87EB1F78164EC87F00452E64 /* ExampleViewController.m */,
 				87EB1F3F164981E900452E64 /* Supporting Files */,
 			);
 			path = CVCLEamaples;
