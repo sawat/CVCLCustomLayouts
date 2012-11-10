@@ -23,10 +23,10 @@
             </objects>
             <point key="canvasLocation" x="-1" y="64"/>
         </scene>
-        <!--Example View Controller - Master-->
+        <!--Example Root View Controller - Master-->
         <scene sceneID="18">
             <objects>
-                <tableViewController storyboardIdentifier="" title="Master" id="12" customClass="ExampleViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="" title="Master" id="12" customClass="ExampleRootViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="13">
                         <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -67,10 +67,10 @@
             </objects>
             <point key="canvasLocation" x="459" y="64"/>
         </scene>
-        <!--Cover Flow View Controller-->
+        <!--Example View Controller-->
         <scene sceneID="GxK-Y7-fAA">
             <objects>
-                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="Qqg-lY-qd4" customClass="CoverFlowViewController" sceneMemberID="viewController">
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="Qqg-lY-qd4" customClass="ExampleViewController" sceneMemberID="viewController">
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Xt8-5l-AMs">
                         <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
