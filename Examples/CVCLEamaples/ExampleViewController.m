@@ -2,8 +2,8 @@
 //  CoverFlowViewController.m
 //  CollectionViewSample
 //
-//  Created by ITmedia on 12/11/05.
-//  Copyright (c) 2012年 ITmedia. All rights reserved.
+//  Created by 沢 辰洋 on 12/11/05.
+//  Copyright (c) 2012年 沢 辰洋 All rights reserved.
 //
 
 #import "ExampleViewController.h"
