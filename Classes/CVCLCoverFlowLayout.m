@@ -10,6 +10,15 @@
 
 #import "CVCLCoverFlowLayout.h"
 
+static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
+
+@interface CVCLReflectionView : UICollectionReusableView
+@property (nonatomic, copy) NSIndexPath * indexPath;
+@property (nonatomic, strong) UIImageView * reflectionImageView;
+@property (nonatomic, readonly) UICollectionView * parentCollectionView;
+@property (nonatomic, readonly) UICollectionReusableView * relatedCell;
+@end
+
 @interface CVCLCoverFlowLayout () 
 
 @property (nonatomic, readonly) NSInteger count;
@@ -53,6 +62,8 @@
 - (void)setInitialValues {
     self.cellSize = CGSizeMake(100, 100);
     self.cellInterval = self.cellSize.width / 3;
+    
+    [self registerClass:[CVCLReflectionView class] forDecorationViewOfKind:kDecorationViewKindReflection];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -167,7 +178,12 @@
             [array addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:indexPath]];
             section = indexPath.section;
         }
+        
         [array addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
+
+        if (self.reflection) {
+            [array addObject:[self layoutAttributesForDecorationViewOfKind:kDecorationViewKindReflection atIndexPath:indexPath]];
+        }
     }
     return array;
 }
@@ -218,7 +234,36 @@
             frame.origin.x -= frame.origin.x + frame.size.width - nextSectionX;
         }
     }
+    
+    // カバーフローのセルやデコレーションビューと交差しない様に、手前に移動させる。
+    // m34の設定をしないため、見た目上のサイズは変わらない
     attr.frame = frame;
+    attr.transform3D = CATransform3DMakeTranslation(0, 0, 300);
+    
+    return attr;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)decorationViewKind atIndexPath:(NSIndexPath *)indexPath {
+    if (![decorationViewKind isEqualToString:kDecorationViewKindReflection]) {
+        return nil;
+    }
+    
+    UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:decorationViewKind withIndexPath:indexPath];
+    
+    CGFloat cw = [self cellsHorizontalInterval];
+    
+    CGFloat cellOffsetX = [self totalIndexOfIndexPath:indexPath] * cw + self.layoutInsets.left;
+    
+    CGRect frame;
+    frame.origin.x = cellOffsetX;
+    frame.origin.y = (self.collectionView.bounds.size.height - self.cellSize.height) / 2.0;
+    frame.size = self.cellSize;
+    frame.size.height /= 2;
+    
+    attr.frame = frame;
+    
+    attr.transform3D = [self transformWithCellOffsetX:cellOffsetX];
+    attr.transform3D = CATransform3DTranslate(attr.transform3D, 0, self.cellSize.height, 0);
     
     return attr;
 }
@@ -297,5 +342,132 @@
     [self prepareSectionIndexTable];
     [super prepareForCollectionViewUpdates:updateItems];
 }
+
+@end
+
+#pragma mark -
+
+@implementation CVCLReflectionView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.reflectionImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.reflectionImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.reflectionImageView.alpha = 0.5;
+        [self addSubview:self.reflectionImageView];
+    }
+    return self;
+}
+
+- (UICollectionView *)parentCollectionView {
+    return (UICollectionView *)self.superview;
+}
+- (UICollectionReusableView *)relatedCell {
+    return [self.parentCollectionView cellForItemAtIndexPath:self.indexPath];
+}
+
+- (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
+    [super applyLayoutAttributes:layoutAttributes];
+    self.indexPath = layoutAttributes.indexPath;
+    self.reflectionImageView.image = [self reflectedImage:self.relatedCell withHeight:self.relatedCell.bounds.size.height / 2.0];
+}
+
+
+CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
+{
+	CGImageRef theCGImage = NULL;
+	
+	// gradient is always black-white and the mask must be in the gray colorspace
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+	
+	// create the bitmap context
+	CGContextRef gradientBitmapContext = CGBitmapContextCreate(nil, pixelsWide, pixelsHigh,
+															   8, 0, colorSpace, kCGImageAlphaNone);
+	
+	// define the start and end grayscale values (with the alpha, even though
+	// our bitmap context doesn't support alpha the gradient requires it)
+	CGFloat colors[] = {0.0, 1.0, 1.0, 1.0};
+	
+	// create the CGGradient and then release the gray color space
+	CGGradientRef grayScaleGradient = CGGradientCreateWithColorComponents(colorSpace, colors, NULL, 2);
+	CGColorSpaceRelease(colorSpace);
+	
+	// create the start and end points for the gradient vector (straight down)
+	CGPoint gradientStartPoint = CGPointZero;
+	CGPoint gradientEndPoint = CGPointMake(0, pixelsHigh);
+	
+	// draw the gradient into the gray bitmap context
+	CGContextDrawLinearGradient(gradientBitmapContext, grayScaleGradient, gradientStartPoint,
+								gradientEndPoint, kCGGradientDrawsAfterEndLocation);
+	
+	// convert the context into a CGImageRef and release the context
+	theCGImage = CGBitmapContextCreateImage(gradientBitmapContext);
+	CGContextRelease(gradientBitmapContext);
+	CGGradientRelease(grayScaleGradient);
+	
+	// return the imageref containing the gradient
+    return theCGImage;
+}
+
+CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
+{
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	
+	// create the bitmap context
+	CGContextRef bitmapContext = CGBitmapContextCreate (nil, pixelsWide, pixelsHigh, 8,
+														0, colorSpace,
+														// this will give us an optimal BGRA format for the device:
+														(kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst));
+	CGColorSpaceRelease(colorSpace);
+	
+    return bitmapContext;
+}
+
+- (UIImage *)reflectedImage:(UIView *)fromView withHeight:(NSUInteger)height
+{
+    if (!height) return nil;
+    
+	// create a bitmap graphics context the size of the image
+	CGContextRef mainViewContentContext = MyCreateBitmapContext(fromView.bounds.size.width, height);
+	
+	// offset the context -
+	// This is necessary because, by default, the layer created by a view for caching its content is flipped.
+	// But when you actually access the layer content and have it rendered it is inverted.  Since we're only creating
+	// a context the size of our reflection view (a fraction of the size of the main view) we have to translate the
+	// context the delta in size, and render it.
+	//
+	CGFloat translateVertical= fromView.bounds.size.height - height;
+	CGContextTranslateCTM(mainViewContentContext, 0, -translateVertical);
+	
+	// render the layer into the bitmap context
+	CALayer *layer = fromView.layer;
+	[layer renderInContext:mainViewContentContext];
+	
+	// create CGImageRef of the main view bitmap content, and then release that bitmap context
+	CGImageRef mainViewContentBitmapContext = CGBitmapContextCreateImage(mainViewContentContext);
+	CGContextRelease(mainViewContentContext);
+	
+	// create a 2 bit CGImage containing a gradient that will be used for masking the
+	// main view content to create the 'fade' of the reflection.  The CGImageCreateWithMask
+	// function will stretch the bitmap image as required, so we can create a 1 pixel wide gradient
+	CGImageRef gradientMaskImage = CreateGradientImage(1, height);
+	
+	// create an image by masking the bitmap of the mainView content with the gradient view
+	// then release the  pre-masked content bitmap and the gradient bitmap
+	CGImageRef reflectionImage = CGImageCreateWithMask(mainViewContentBitmapContext, gradientMaskImage);
+	CGImageRelease(mainViewContentBitmapContext);
+	CGImageRelease(gradientMaskImage);
+	
+	// convert the finished reflection image to a UIImage
+	UIImage *theImage = [UIImage imageWithCGImage:reflectionImage];
+	
+	// image is retained by the property setting above, so we can release the original
+	CGImageRelease(reflectionImage);
+	
+	return theImage;
+}
+
 
 @end

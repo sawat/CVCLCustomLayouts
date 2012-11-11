@@ -75,7 +75,7 @@ static NSInteger kInitialItemsInSection = 30;
     self.title = [[ExampleLayoutsDataSource sharedInstance] titleForRowAtIndexPath:self.layoutIndexPath];
     
     if (![newCellId isEqualToString:oldCellId]) {
-        [self.collectionView reloadData];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.collectionView.numberOfSections)]];
     } else {
         [self.collectionView.collectionViewLayout invalidateLayout];
     }

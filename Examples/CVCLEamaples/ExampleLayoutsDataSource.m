@@ -51,23 +51,28 @@ static NSString * const kCellIdentifier = @"cellId";
 {
     self = [super init];
     if (self) {
+        
+        CVCLCoverFlowLayout *layoutWithDeco = [[CVCLCoverFlowLayout alloc] init];
+        layoutWithDeco.reflection = YES;
+        
         CVCLHomeIconLayout *iconLayout2 = [[CVCLHomeIconLayout alloc] init];
         iconLayout2.headerHeight = 30;
         iconLayout2.footerHeight = 40;
+        iconLayout2.cellSize = CGSizeMake(64, 72);
         
         self.sections = @[
         @{kSectionTitle : @"FlowLayout",
     kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal], kPaging:@YES}],
         },
         @{kSectionTitle : @"CoverFlow",
-    kRows: @[ @{kRowTitle:@"CoverFlow 1", kLayout:[[CVCLCoverFlowLayout alloc] init]}, @{kRowTitle:@"CoverFlow 2", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)]}, @{kRowTitle:@"CoverFlow 3", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)]}],
+    kRows: @[ @{kRowTitle:@"CoverFlow 1", kLayout:[[CVCLCoverFlowLayout alloc] init]}, @{kRowTitle:@"CoverFlow 2", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)]}, @{kRowTitle:@"CoverFlow 3", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)]}, @{kRowTitle:@"CoverFlow with DecorationView", kLayout:layoutWithDeco}],
         },
         @{kSectionTitle : @"Revolver",
     kRows: @[ @{kRowTitle:@"Revolver 1", kLayout:[[CVCLRevolverLayout alloc] init]}],
         },
         @{kSectionTitle : @"Homescreen Icons",
     kRows: @[ @{kRowTitle:@"Icons", kLayout:[[CVCLHomeIconLayout alloc] init], kCellIdentifier:@"IconCell", kPaging:@YES},
-        @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell", kPaging:@YES}],
+        @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell2", kPaging:@YES}],
         },
         ];
     }

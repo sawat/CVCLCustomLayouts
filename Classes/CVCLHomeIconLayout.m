@@ -58,6 +58,7 @@
 
 - (void)computeAllLayout {
     CGSize size = self.collectionView.bounds.size;
+    LOG(@"bounds.size: %@", NSStringFromCGSize(size));
     _prepareLayoutSize = size;
     
     _gridColumns = (NSInteger)((size.width - self.mergin) / (self.cellSize.width + self.mergin));
@@ -116,6 +117,11 @@
     
     attr.frame = frame;
     
+    CATransform3D transform3D = CATransform3DIdentity;
+    transform3D.m34 = -1.0 / 800;
+    
+    attr.transform3D = transform3D;
+    
     return attr;
 }
 
@@ -130,6 +136,7 @@
     frame.size.height = header ? self.headerHeight : self.footerHeight;
     
     attr.frame = frame;
+    attr.zIndex = 1000;
     
     return attr;
 }
@@ -140,7 +147,7 @@
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:(_gridColumns*_gridRows*2)];
     
     for (int section = MAX(0, rect.origin.x / self.collectionView.bounds.size.width),
-         end = MIN(self.sectionLayouts.count, (rect.origin.x + rect.size.width ) / self.collectionView.bounds.size.width); section < end; section++) {
+         end = MIN(self.sectionLayouts.count, (rect.origin.x + rect.size.width ) / self.collectionView.bounds.size.width + 1); section < end; section++) {
         if (self.headerLayouts) {
             [array addObject:self.headerLayouts[section]];
         }
@@ -177,11 +184,12 @@
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    BOOL invalidate = !CGSizeEqualToSize(_prepareLayoutSize, self.collectionView.bounds.size);
-    if (invalidate) {
-        [self computeAllLayout];
-    }
-    return invalidate;
+//    BOOL invalidate = !CGSizeEqualToSize(_prepareLayoutSize, self.collectionView.bounds.size);
+//    if (invalidate) {
+//        [self computeAllLayout];
+//    }
+//    return invalidate;
+    return YES;
 }
 
 #pragma mark -
@@ -222,7 +230,8 @@
     
     if (CGSizeEqualToSize(attributes.frame.size, CGSizeZero)) {
         attributes = [self prepareLayoutAttributesForItemAtIndexPath:itemIndexPath];
-        attributes.transform3D = CATransform3DScale(attributes.transform3D, 0, 0, 1);
+        CATransform3D transform3D = CATransform3DTranslate(attributes.transform3D, 0, 0, -1000);
+        attributes.transform3D = transform3D;
     }
     
     return attributes;
@@ -240,7 +249,8 @@
         }
         
         // Configure attributes ...
-        attributes.transform3D = CATransform3DScale(attributes.transform3D, 0, 0, 1);
+        CATransform3D transform3D = CATransform3DTranslate(attributes.transform3D, 0, 0, -1000);
+        attributes.transform3D = transform3D;
     }
     
     return attributes;
