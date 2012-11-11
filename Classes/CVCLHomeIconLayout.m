@@ -92,6 +92,7 @@
 }
 
 - (void)prepareLayout {
+    [super prepareLayout];
     [self computeAllLayout];
 }
 
@@ -184,12 +185,12 @@
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-//    BOOL invalidate = !CGSizeEqualToSize(_prepareLayoutSize, self.collectionView.bounds.size);
-//    if (invalidate) {
-//        [self computeAllLayout];
-//    }
-//    return invalidate;
-    return YES;
+    BOOL invalidate = !CGSizeEqualToSize(_prepareLayoutSize, self.collectionView.bounds.size);
+    if (invalidate) {
+        [self computeAllLayout];
+    }
+    return invalidate;
+//    return YES;
 }
 
 #pragma mark -
@@ -266,6 +267,10 @@
     return [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
 }
 
+
+- (void)prepareForAnimatedBoundsChange:(CGRect)oldBounds {
+    [self computeAllLayout];
+}
 
 
 @end
