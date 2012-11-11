@@ -11,8 +11,11 @@
 #import "MyHeaderView.h"
 #import "ExampleLayoutsDataSource.h"
 
+static NSInteger kInitialItemsInSection = 30;
+
 @interface ExampleViewController () <UICollectionViewDelegateFlowLayout>
 @property (nonatomic, copy) NSIndexPath *layoutIndexPath;
+@property (nonatomic, strong) NSMutableArray *items;
 @end
 
 @implementation ExampleViewController
@@ -30,6 +33,14 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.items = [NSMutableArray array];
+    for (int sec=0; sec<2; sec++) {
+        NSMutableArray *sectionItems = [NSMutableArray arrayWithCapacity:kInitialItemsInSection];
+        for (int item = 0; item < kInitialItemsInSection; item++) {
+            [sectionItems addObject:@(item)];
+        }
+        [self.items addObject:sectionItems];
+    }
     
     self.toolbarItems = @[self.editButtonItem];
     
@@ -86,19 +97,20 @@
 
 #pragma mark - 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 2;
+    return self.items.count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 30;
+    return [self.items[section] count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     MyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
-    cell.titleLabel.text = [NSString stringWithFormat:@"%d-%d", indexPath.section, indexPath.row];
-    CGFloat hue = (CGFloat)indexPath.row / [self collectionView:collectionView numberOfItemsInSection:indexPath.section];
+    NSInteger itemNumber  = [[self.items[indexPath.section] objectAtIndex:indexPath.row] intValue];
+    cell.titleLabel.text = [NSString stringWithFormat:@"%d-%d", indexPath.section, itemNumber];
+    CGFloat hue = (float)itemNumber / kInitialItemsInSection;
     [cell setColor:[UIColor colorWithHue:hue saturation:0.5 brightness:1.0 alpha:1.0]];
     
     [cell setEditing:self.editing animated:NO];
@@ -133,7 +145,13 @@
 
 #pragma mark -
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [[[UIAlertView alloc] initWithTitle:@"Tap" message:[indexPath description] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+
+    if (self.editing) {
+        [self.items[indexPath.section] removeObjectAtIndex:indexPath.row];
+        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"Tap" message:[indexPath description] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
 }
 
 @end
