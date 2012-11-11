@@ -194,9 +194,6 @@
     
     for (UICollectionViewUpdateItem *update in updateItems)
     {
-        LOG(@"[%d-%d] -> [%d-%d] %d", update.indexPathBeforeUpdate.section, update.indexPathBeforeUpdate.item,
-            update.indexPathAfterUpdate.section, update.indexPathAfterUpdate.item, update.updateAction);
-        
         if (update.updateAction == UICollectionUpdateActionDelete)
         {
             [self.deleteIndexPaths addObject:update.indexPathBeforeUpdate];
@@ -223,6 +220,11 @@
         attributes.transform3D = CATransform3DTranslate(attributes.transform3D, 0, 0, 1);
     }
     
+    if (CGSizeEqualToSize(attributes.frame.size, CGSizeZero)) {
+        attributes = [self prepareLayoutAttributesForItemAtIndexPath:itemIndexPath];
+        attributes.transform3D = CATransform3DScale(attributes.transform3D, 0, 0, 1);
+    }
+    
     return attributes;
 }
 
@@ -240,7 +242,6 @@
         // Configure attributes ...
         attributes.transform3D = CATransform3DScale(attributes.transform3D, 0, 0, 1);
     }
-    LOG(@"Disappearing item: [%d-%d]", itemIndexPath.section, itemIndexPath.item);
     
     return attributes;
     
