@@ -65,7 +65,9 @@
 
 - (void)prepareLayout {
     [self updateCenterRateThreshold:self.collectionView.bounds];
-    [self prepareSectionIndexTable];
+    if (self.sectionIndexTable == nil) {
+        [self prepareSectionIndexTable];
+    }
 }
 
 - (void)prepareSectionIndexTable {
@@ -80,7 +82,6 @@
     [table addObject:@(count)];
     _count = count;
     self.sectionIndexTable = table;
-    LOG(@"table: %@", self.sectionIndexTable);
 }
 
 - (NSInteger)count {
@@ -217,7 +218,6 @@
             frame.origin.x -= frame.origin.x + frame.size.width - nextSectionX;
         }
     }
-    
     attr.frame = frame;
     
     return attr;
@@ -287,9 +287,15 @@
 - (CGFloat)translateZForDistanceRate:(CGFloat)rate {
     
     if (fabsf(rate) < _centerRateThreshold) {
-        return 2 * self.cellSize.width * cos((rate / _centerRateThreshold) * M_PI_2);
+        return -1.0 - 2.0 * self.cellSize.width * (1.0 - cos((rate / _centerRateThreshold) * M_PI_2));
     }
-    return 0;
+    return -1.0 - 2.0 * self.cellSize.width;
+}
+
+#pragma mark - Update
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    [self prepareSectionIndexTable];
+    [super prepareForCollectionViewUpdates:updateItems];
 }
 
 @end

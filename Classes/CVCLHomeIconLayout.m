@@ -11,6 +11,10 @@
 @interface CVCLHomeIconLayout ()
 
 @property (nonatomic, strong) NSArray *sectionLayouts;
+@property (nonatomic, strong) NSArray *headerLayouts;
+@property (nonatomic, strong) NSArray *footerLayouts;
+@property (nonatomic, strong) NSMutableArray *insertIndexPaths;
+@property (nonatomic, strong) NSMutableArray *deleteIndexPaths;
 
 @end
 
@@ -59,24 +63,31 @@
     _gridColumns = (NSInteger)((size.width - self.mergin) / (self.cellSize.width + self.mergin));
     _gridRows = (NSInteger)((size.height -self.headerHeight - self.footerHeight - self.mergin) / (self.cellSize.height + self.mergin));
     
-    NSMutableArray *newLayouts = [NSMutableArray arrayWithCapacity:self.collectionView.numberOfSections];
-    for (int sec = 0; sec < self.collectionView.numberOfSections; sec++) {
+    NSInteger secNum = self.collectionView.numberOfSections;
+    
+    NSMutableArray *newLayouts = [NSMutableArray arrayWithCapacity:secNum];
+    NSMutableArray *newHeaderLayouts = self.headerHeight > 0 ? [NSMutableArray arrayWithCapacity:secNum] : nil;
+    NSMutableArray *newFooterLayouts = self.footerHeight > 0 ? [NSMutableArray arrayWithCapacity:secNum] : nil;
+    
+    for (int sec = 0; sec < secNum; sec++) {
         NSMutableArray *attrs = [NSMutableArray arrayWithCapacity:(_gridColumns * _gridRows)];
+        
+        if (self.headerHeight > 0) {
+            [newHeaderLayouts addObject:[self prepareLayoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:sec]]];
+        }
+        if (self.footerHeight > 0) {
+            [newFooterLayouts addObject:[self prepareLayoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:[NSIndexPath indexPathForItem:0 inSection:sec]]];
+        }
         
         for (int item = 0; item < [self.collectionView numberOfItemsInSection:sec] && item < (_gridColumns * _gridRows); item++) {
             [attrs addObject:[self prepareLayoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:sec]]];
         }
         
-        if (self.headerHeight > 0) {
-            [attrs addObject:[self prepareLayoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:sec]]];
-        }
-        if (self.footerHeight > 0) {
-            [attrs addObject:[self prepareLayoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionFooter atIndexPath:[NSIndexPath indexPathForItem:0 inSection:sec]]];
-        }
-        
         [newLayouts addObject:attrs];
     }
     self.sectionLayouts = newLayouts;
+    self.headerLayouts = newHeaderLayouts;
+    self.footerLayouts = newFooterLayouts;
 }
 
 - (void)prepareLayout {
@@ -125,13 +136,20 @@
 
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSInteger section = MIN(MAX(0, rect.origin.x / self.collectionView.bounds.size.width),self.sectionLayouts.count);
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:(_gridColumns*_gridRows*2)];
-    [array addObjectsFromArray:self.sectionLayouts[section]];
 
-    if (section + 1 != self.sectionLayouts.count) {
-        [array addObjectsFromArray:self.sectionLayouts[section+1]];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:(_gridColumns*_gridRows*2)];
+    
+    for (int section = MAX(0, rect.origin.x / self.collectionView.bounds.size.width),
+         end = MIN(self.sectionLayouts.count, (rect.origin.x + rect.size.width ) / self.collectionView.bounds.size.width); section < end; section++) {
+        if (self.headerLayouts) {
+            [array addObject:self.headerLayouts[section]];
+        }
+        if (self.footerLayouts) {
+            [array addObject:self.footerLayouts[section]];
+        }
+        [array addObjectsFromArray:self.sectionLayouts[section]];
     }
+    
     
     return array;
 }
@@ -147,6 +165,17 @@
     return [array objectAtIndex:indexPath.item];
 }
 
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    LOG(@"SupplementaryView: [%d-%d]", indexPath.section, indexPath.item);
+
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader] && self.headerLayouts) {
+        return self.headerLayouts[indexPath.section];
+    } else if ([kind isEqualToString:UICollectionElementKindSectionFooter] && self.footerLayouts) {
+        return self.footerLayouts[indexPath.section];
+    }
+    return nil;
+}
+
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     BOOL invalidate = !CGSizeEqualToSize(_prepareLayoutSize, self.collectionView.bounds.size);
     if (invalidate) {
@@ -154,6 +183,78 @@
     }
     return invalidate;
 }
+
+#pragma mark -
+- (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
+    // Keep track of insert and delete index paths
+    [super prepareForCollectionViewUpdates:updateItems];
+    
+    self.deleteIndexPaths = [NSMutableArray array];
+    self.insertIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *update in updateItems)
+    {
+        LOG(@"[%d-%d] -> [%d-%d] %d", update.indexPathBeforeUpdate.section, update.indexPathBeforeUpdate.item,
+            update.indexPathAfterUpdate.section, update.indexPathAfterUpdate.item, update.updateAction);
+        
+        if (update.updateAction == UICollectionUpdateActionDelete)
+        {
+            [self.deleteIndexPaths addObject:update.indexPathBeforeUpdate];
+        }
+        else if (update.updateAction == UICollectionUpdateActionInsert)
+        {
+            [self.insertIndexPaths addObject:update.indexPathAfterUpdate];
+        }
+    }
+}
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    
+    // Must call super
+    UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath:itemIndexPath];
+    
+    if ([self.insertIndexPaths containsObject:itemIndexPath]) {
+        // only change attributes on inserted cells
+        if (!attributes) {
+            attributes = [self prepareLayoutAttributesForItemAtIndexPath:itemIndexPath];
+        }
+        
+        // Configure attributes ...
+        attributes.transform3D = CATransform3DTranslate(attributes.transform3D, 0, 0, 1);
+    }
+    
+    return attributes;
+}
+
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    // Must call super
+    UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath:itemIndexPath];
+    
+    if ([self.deleteIndexPaths containsObject:itemIndexPath]) {
+        // only change attributes on inserted cells
+        if (!attributes) {
+            // 元の位置から
+            attributes = [self prepareLayoutAttributesForItemAtIndexPath:itemIndexPath];
+        }
+        
+        // Configure attributes ...
+        attributes.transform3D = CATransform3DScale(attributes.transform3D, 0, 0, 1);
+    }
+    LOG(@"Disappearing item: [%d-%d]", itemIndexPath.section, itemIndexPath.item);
+    
+    return attributes;
+    
+}
+
+- (UICollectionViewLayoutAttributes *)initialLayoutAttributesForAppearingSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)elementIndexPath {
+    LOG(@"Appearing Supp: [%d-%d] %@", elementIndexPath.section, elementIndexPath.item, elementKind);
+    return [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
+}
+- (UICollectionViewLayoutAttributes *)finalLayoutAttributesForDisappearingSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)elementIndexPath {
+    LOG(@"Disappearing Supp: [%d-%d] %@", elementIndexPath.section, elementIndexPath.item, elementKind);
+    return [self layoutAttributesForSupplementaryViewOfKind:elementKind atIndexPath:elementIndexPath];
+}
+
 
 
 @end
