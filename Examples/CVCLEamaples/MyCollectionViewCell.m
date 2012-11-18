@@ -30,6 +30,15 @@
     return self;
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    LOG_METHOD;
+    self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+    [self.selectedBackgroundView setBackgroundColor:[UIColor blueColor]];
+    
+}
+
 - (void)setColor:(UIColor *)color {
     [self.titleLabel setBackgroundColor:color];
 }
@@ -63,11 +72,11 @@
             [self.layer addAnimation:animation forKey:animationKey];
         }
 
-        if (self.deleteButtonView == nil) {
-            DeleteButtonView *view = [[DeleteButtonView alloc] initWithFrame:self.bounds];
-            [self addSubview:view];
-            self.deleteButtonView = view;
-        }
+//        if (self.deleteButtonView == nil) {
+//            DeleteButtonView *view = [[DeleteButtonView alloc] initWithFrame:self.bounds];
+//            [self addSubview:view];
+//            self.deleteButtonView = view;
+//        }
         
     } else {
         [self.layer removeAnimationForKey:animationKey];
