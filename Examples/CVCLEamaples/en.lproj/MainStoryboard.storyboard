@@ -71,7 +71,7 @@
         <scene sceneID="GxK-Y7-fAA">
             <objects>
                 <collectionViewController autoresizesArchivedViewToFullSize="NO" id="Qqg-lY-qd4" customClass="ExampleViewController" sceneMemberID="viewController">
-                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Xt8-5l-AMs">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" indicatorStyle="white" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Xt8-5l-AMs">
                         <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="qGA-Se-cZf">
@@ -206,6 +206,23 @@
                             <outlet property="delegate" destination="Qqg-lY-qd4" id="z9P-zi-4bP"/>
                         </connections>
                     </collectionView>
+                    <toolbarItems>
+                        <barButtonItem title="Delete" id="5oG-at-wiG">
+                            <connections>
+                                <action selector="handleTapDeleteButton:" destination="Qqg-lY-qd4" id="GL6-IH-3uj"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Insert Before" id="fjO-XB-QmG">
+                            <connections>
+                                <action selector="handleTapInsertButton:" destination="Qqg-lY-qd4" id="8gM-E1-gu7"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Move to Next" id="1ki-vw-tCe">
+                            <connections>
+                                <action selector="handleTapMoveButton:" destination="Qqg-lY-qd4" id="o9p-2C-4t5"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="XSz-9k-g3X">
                         <barButtonItem key="rightBarButtonItem" id="hiJ-Of-r3R">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" id="wTr-4C-Dso">
@@ -221,6 +238,12 @@
                             </segmentedControl>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outletCollection property="editModeButtons" destination="5oG-at-wiG" id="NTt-bu-xa9"/>
+                        <outletCollection property="editModeButtons" destination="fjO-XB-QmG" id="QOe-zN-3vN"/>
+                        <outletCollection property="editModeButtons" destination="1ki-vw-tCe" id="YfF-XQ-Uja"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2HG-Ba-mgD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
