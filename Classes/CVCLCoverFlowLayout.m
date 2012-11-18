@@ -258,7 +258,6 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     frame.origin.x = cellOffsetX;
     frame.origin.y = (self.collectionView.bounds.size.height - self.cellSize.height) / 2.0;
     frame.size = self.cellSize;
-    frame.size.height /= 2;
     
     attr.frame = frame;
     
@@ -371,7 +370,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
     self.indexPath = layoutAttributes.indexPath;
-    self.reflectionImageView.image = [self reflectedImage:self.relatedCell withHeight:self.relatedCell.bounds.size.height / 2.0];
+    self.reflectionImageView.image = [self reflectedImage:self.relatedCell withHeight:self.relatedCell.bounds.size.height];
 }
 
 
