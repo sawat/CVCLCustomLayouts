@@ -52,7 +52,7 @@ static NSString * const kCellIdentifier = @"cellId";
     self = [super init];
     if (self) {
         
-        CVCLCoverFlowLayout *layoutWithDeco = [[CVCLCoverFlowLayout alloc] init];
+        CVCLCoverFlowLayout *layoutWithDeco = [[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(150, 150)];
         layoutWithDeco.reflection = YES;
         
         CVCLHomeIconLayout *iconLayout2 = [[CVCLHomeIconLayout alloc] init];

@@ -14,6 +14,7 @@
 static NSInteger kInitialItemsInSection = 30;
 
 @interface ExampleViewController () <UICollectionViewDelegateFlowLayout>
+@property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *editModeButtons;
 @property (nonatomic, copy) NSIndexPath *layoutIndexPath;
 @property (nonatomic, strong) NSMutableArray *items;
 @end
@@ -41,7 +42,8 @@ static NSInteger kInitialItemsInSection = 30;
         }
         [self.items addObject:sectionItems];
     }
-    
+
+    self.collectionView.allowsMultipleSelection = YES;
     self.toolbarItems = @[self.editButtonItem];
     
     if (self.layout) {
@@ -79,10 +81,31 @@ static NSInteger kInitialItemsInSection = 30;
     } else {
         [self.collectionView.collectionViewLayout invalidateLayout];
     }
-
 }
 
-
+// Override
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    
+    [super setEditing:editing animated:animated];
+    
+    if (editing) {
+        self.toolbarItems = [@[self.editButtonItem] arrayByAddingObjectsFromArray:self.editModeButtons];
+    } else {
+        self.toolbarItems = @[self.editButtonItem];
+    }
+    
+    for (NSIndexPath *selection in self.collectionView.indexPathsForSelectedItems) {
+        [self.collectionView deselectItemAtIndexPath:selection animated:YES];
+    }
+    
+    // UICollectionViewCellはUITableViewCellと異なりediting状態を持っていない。
+    // MyCollectionViewCellに実装したsetEdting:animatedを自前で呼び出す
+    for (MyCollectionViewCell *cell in [self.collectionView visibleCells]) {
+        [cell setEditing:editing animated:animated];
+    }
+    
+}
+#pragma mark - Acitons
 
 - (IBAction)handleTapSegmentControl:(id)sender {
     UISegmentedControl *seg = sender;
@@ -95,7 +118,46 @@ static NSInteger kInitialItemsInSection = 30;
     [self setLayoutAtIndexPath:newIndexPath animation:YES];
 }
 
-#pragma mark - 
+- (IBAction)handleTapDeleteButton:(id)sender {
+    for (NSIndexPath *selection in self.collectionView.indexPathsForSelectedItems) {
+        [self.items[selection.section] removeObjectAtIndex:selection.row];
+    }
+    [self.collectionView deleteItemsAtIndexPaths:self.collectionView.indexPathsForSelectedItems];
+}
+
+- (IBAction)handleTapInsertButton:(id)sender {
+    NSArray *selectionArray = self.collectionView.indexPathsForSelectedItems;
+    if (selectionArray.count != 0) {
+        
+        NSIndexPath *firstSelection = selectionArray[0];
+        
+        [self.items[firstSelection.section] insertObject:@(30) atIndex:firstSelection.row];
+        [self.collectionView insertItemsAtIndexPaths:@[firstSelection]];
+    }
+}
+
+- (IBAction)handleTapMoveButton:(id)sender {
+    LOG_METHOD;
+    NSArray *selectionArray = self.collectionView.indexPathsForSelectedItems;
+    if (selectionArray.count != 0) {
+        
+        NSIndexPath *firstSelection = selectionArray[0];
+        
+        if (firstSelection.row + 1 == [self.collectionView numberOfItemsInSection:firstSelection.section]) {
+            // 最後のItemは動かさない
+            [self.collectionView deselectItemAtIndexPath:firstSelection animated:YES];
+            return;
+        } else {
+            
+            NSIndexPath *nextItem = [NSIndexPath indexPathForItem:firstSelection.item+1 inSection:firstSelection.section];
+            [self.items[firstSelection.section] exchangeObjectAtIndex:firstSelection.item withObjectAtIndex:nextItem.item];
+            [self.collectionView moveItemAtIndexPath:firstSelection toIndexPath:nextItem];
+        }
+    }
+}
+
+
+#pragma mark - UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return self.items.count;
 }
@@ -134,23 +196,15 @@ static NSInteger kInitialItemsInSection = 30;
     return nil;
 }
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    
-    [super setEditing:editing animated:animated];
-    
-    for (MyCollectionViewCell *cell in [self.collectionView visibleCells]) {
-        [cell setEditing:editing animated:animated];
-    }
-}
 
-#pragma mark -
+#pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     if (self.editing) {
-        [self.items[indexPath.section] removeObjectAtIndex:indexPath.row];
-        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+        // nothing to do.
     } else {
         [[[UIAlertView alloc] initWithTitle:@"Tap" message:[indexPath description] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     }
 }
 
