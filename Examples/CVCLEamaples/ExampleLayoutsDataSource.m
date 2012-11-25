@@ -72,7 +72,7 @@ static NSString * const kCellIdentifier = @"cellId";
         },
         @{kSectionTitle : @"Homescreen Icons",
     kRows: @[ @{kRowTitle:@"Icons", kLayout:[[CVCLHomeIconLayout alloc] init], kCellIdentifier:@"IconCell", kPaging:@YES},
-        @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell2", kPaging:@YES}],
+        @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell", kPaging:@YES}],
         },
         ];
     }

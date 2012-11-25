@@ -203,7 +203,8 @@ static NSInteger kInitialItemsInSection = 30;
     if (self.editing) {
         // nothing to do.
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"Tap" message:[indexPath description] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        NSString *message = [NSString stringWithFormat:@"Tap at [%d - %d]", indexPath.section, indexPath.item];
+        [[[UIAlertView alloc] initWithTitle:@"Tap" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     }
 }
