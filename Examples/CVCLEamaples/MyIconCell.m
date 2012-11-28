@@ -39,4 +39,31 @@
     [self.iconView setBackgroundColor:color];
 }
 
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    
+    static NSString * animationKey = @"editing";
+    
+    if (editing) {
+        
+        if ([self.layer animationForKey:animationKey] == nil) {
+            CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+            
+            animation.duration = 0.5f;
+            animation.repeatCount = HUGE_VAL;
+            
+            CGFloat digree = M_PI / 180 * 3;
+            
+            animation.values = @[@0, @(digree), @0, @(-digree), @(0)];
+            
+            [self.layer addAnimation:animation forKey:animationKey];
+        }
+        
+    } else {
+        [self.layer removeAnimationForKey:animationKey];
+    }
+    
+}
+
 @end

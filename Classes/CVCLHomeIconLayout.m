@@ -168,8 +168,15 @@
     }
     NSArray *array = self.sectionLayouts[indexPath.section];
     if (indexPath.item >= array.count) {
-        return [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+        // レイアウトの変更により、新しく表示されるようになったIndexPath分の初期レイアウトを返す
+        UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+        CGRect frame;
+        frame.origin = CGPointMake(0, self.collectionView.bounds.size.height);
+        frame.size = self.cellSize;
+        attr.frame = frame;
+        return attr;
     }
+    // それ以外は計算済みのレイアウトを返す
     return [array objectAtIndex:indexPath.item];
 }
 
