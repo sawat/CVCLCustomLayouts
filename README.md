@@ -1,10 +1,21 @@
 CVCLCustomLayouts
 =================
 
-UICollectionView Custom Layout Collection
+これは、UICollectionViewのカスタムレイアウト集です。
 
 ![image](https://github.com/sawat/CVCLCustomLayouts/blob/master/ScreenShots/ss1_cover_flow.png?raw=true)
 
+
+注意
+====
+iOS6.0.1において、UICollectionViewLayoutのデコレーションビューの生成と再利用に
+バグがあるようです。具体的に言うと、スクロールアウトして非表示になったデコレーションビューの
+インスタンスが正しく再利用されず、スクロールするたび、無限にインスタンスが生成され再利用プールに
+キャッシュされるようです（広義のメモリリーク）。
+
+CVCLCoverFlowLayoutのreflectionプロパティにYESを設定した場合に表示される
+鏡像はデコレーションビューを使用しています。
+そのため、UICollectionViewの上記のバグが修正されない限り、メモリリークが発生することにご注意ください。
 
 LICENCE
 =======
