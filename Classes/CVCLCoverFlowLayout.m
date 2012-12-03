@@ -24,6 +24,8 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 @property (nonatomic, readonly) NSInteger count;
 @property (nonatomic, readonly) UIEdgeInsets layoutInsets;
 @property (nonatomic, strong) NSArray *sectionIndexTable;
+@property (nonatomic, strong) NSMutableArray *insertIndexPaths;
+@property (nonatomic, strong) NSMutableArray *deleteIndexPaths;
 
 @end
 
@@ -204,6 +206,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     attr.frame = frame;
     
     attr.transform3D = [self transformWithCellOffsetX:cellOffsetX];
+    attr.alpha = 1.0;
     
     return attr;
 }
@@ -264,6 +267,8 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     attr.transform3D = [self transformWithCellOffsetX:cellOffsetX];
     attr.transform3D = CATransform3DTranslate(attr.transform3D, 0, self.cellSize.height, 0);
     
+    attr.alpha = 1.0;
+    
     return attr;
 }
 
@@ -276,7 +281,6 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     return YES;
 }
 
-
 #pragma mark - Functions
 
 - (CGFloat)rateFowCellOffsetX:(CGFloat)cellOffsetX {
@@ -285,8 +289,10 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     CGFloat rate = offsetFromCenter / bw;
     return MIN(MAX(-1.0, rate), 1.0);
 }
-
 - (CATransform3D)transformWithCellOffsetX:(CGFloat)cellOffsetX {
+    return [self transformWithCellOffsetX:cellOffsetX disappearing:NO];
+}
+- (CATransform3D)transformWithCellOffsetX:(CGFloat)cellOffsetX disappearing:(BOOL)disappearing {
     static const CGFloat zDistance = 800.0f;
     
     CGFloat rate = [self rateFowCellOffsetX:cellOffsetX];
@@ -303,8 +309,12 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
                                0.0f,
                                [self translateZForDistanceRate:rate]);
     //角度
+    CGFloat angle = [self angleForDistanceRate:rate];
+    if (disappearing) {
+        angle = copysign(M_PI_2, angle);
+    }
     t = CATransform3DRotate(t,
-                            [self angleForDistanceRate:rate],
+                            angle,
                             0.0f,
                             1.0f,
                             0.0f);
@@ -340,7 +350,23 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [self prepareSectionIndexTable];
     [super prepareForCollectionViewUpdates:updateItems];
+
+    self.deleteIndexPaths = [NSMutableArray array];
+    self.insertIndexPaths = [NSMutableArray array];
+    
+    for (UICollectionViewUpdateItem *update in updateItems)
+    {
+        if (update.updateAction == UICollectionUpdateActionDelete)
+        {
+            [self.deleteIndexPaths addObject:update.indexPathBeforeUpdate];
+        }
+        else if (update.updateAction == UICollectionUpdateActionInsert)
+        {
+            [self.insertIndexPaths addObject:update.indexPathAfterUpdate];
+        }
+    }
 }
+
 
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
     CGFloat offsetAdjustment = MAXFLOAT;
@@ -362,7 +388,9 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 
 #pragma mark -
 
-@implementation CVCLReflectionView
+@implementation CVCLReflectionView {
+    int _useCount;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -371,9 +399,37 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
         self.reflectionImageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.reflectionImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.reflectionImageView.alpha = 0.5;
+        _useCount = 0;
         [self addSubview:self.reflectionImageView];
     }
     return self;
+}
+
+- (void)setHidden:(BOOL)hidden {
+    [super setHidden:hidden];
+    if (hidden) {
+        LOG_METHOD;
+    }
+}
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+    _useCount++;
+    LOG(@"Did Move to Superview: %@", self);
+}
+
+- (void)removeFromSuperview {
+    LOG(@"Remove from Superview: %@", self);
+    LOG_RC(self);
+    [super removeFromSuperview];
+}
+
+- (void)dealloc {
+    LOG(@"dealloc ReflectionView: %@", self);
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"ReflectionView[%d-%d](%d)", self.indexPath.section, self.indexPath.item, _useCount];
 }
 
 - (UICollectionView *)parentCollectionView {
@@ -382,13 +438,12 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 - (UICollectionReusableView *)relatedCell {
     return [self.parentCollectionView cellForItemAtIndexPath:self.indexPath];
 }
-
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
+    
     self.indexPath = layoutAttributes.indexPath;
     self.reflectionImageView.image = [self reflectedImage:self.relatedCell withHeight:self.relatedCell.bounds.size.height];
 }
-
 
 CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
 {
