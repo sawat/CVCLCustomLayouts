@@ -19,7 +19,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 @property (nonatomic, readonly) UICollectionReusableView * relatedCell;
 @end
 
-@interface CVCLCoverFlowLayout () 
+@interface CVCLCoverFlowLayout ()
 
 @property (nonatomic, readonly) NSInteger count;
 @property (nonatomic, readonly) UIEdgeInsets layoutInsets;
@@ -123,7 +123,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 }
 
 - (NSIndexPath *)nextIndexPath:(NSIndexPath *)indexPath {
-
+    
     if (indexPath.row + 1 == [self.collectionView numberOfItemsInSection:indexPath.section]) {
         if (indexPath.section + 1 == [self.collectionView numberOfSections]) {
             return nil;
@@ -157,7 +157,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 - (NSArray *)indexPathsForItemsInRect:(CGRect)rect {
     CGFloat cw = [self cellsHorizontalInterval];
     NSInteger minRow = MAX(0, (NSInteger)floor((rect.origin.x - self.layoutInsets.left) / cw));
-
+    
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
     UIEdgeInsets insets = self.layoutInsets;
     NSIndexPath *indexPath = [self indexPathOfTotalIndex:minRow];
@@ -180,7 +180,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
         }
         
         [array addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
-
+        
         if (self.reflection) {
             [array addObject:[self layoutAttributesForDecorationViewOfKind:kDecorationViewKindReflection atIndexPath:indexPath]];
         }
@@ -189,7 +189,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     
     CGFloat cw = [self cellsHorizontalInterval];
@@ -202,7 +202,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     frame.size = self.cellSize;
     
     attr.frame = frame;
-
+    
     attr.transform3D = [self transformWithCellOffsetX:cellOffsetX];
     
     return attr;
@@ -210,7 +210,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
-
+    
     CGRect frame;
     frame.size = CGSizeMake(self.collectionView.bounds.size.width, 30);
     frame.origin.x = self.collectionView.contentOffset.x;
@@ -222,12 +222,12 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     if (indexPath.section != 0 && frame.origin.x < sectionX) {
         frame.origin.x = sectionX;
     }
-
+    
     NSInteger next  = [self.sectionIndexTable[indexPath.section+1] intValue];
     CGFloat nextSectionX = next * [self cellsHorizontalInterval] + self.layoutInsets.left;
     // 次のセクションが画面に入っている場合
     if (indexPath.section != self.collectionView.numberOfSections-1 && frame.origin.x + frame.size.width > nextSectionX) {
-        // 
+        //
         if (frame.origin.x == sectionX) {
             frame.size.width -= frame.origin.x + frame.size.width - nextSectionX;
         } else {
@@ -296,7 +296,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
     t.m34 = 1.0f / -zDistance;
     
     // Affine変換の連結は順番を変えると結果が変わるので注意（行列の積だから）
-
+    
     //位置
     t = CATransform3DTranslate(t,
                                [self translateXForDistanceRate:rate],
@@ -308,7 +308,7 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
                             0.0f,
                             1.0f,
                             0.0f);
-
+    
     return t;
 }
 
@@ -340,6 +340,22 @@ static NSString *kDecorationViewKindReflection = @"DecorationViewReflection";
 - (void)prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [self prepareSectionIndexTable];
     [super prepareForCollectionViewUpdates:updateItems];
+}
+
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
+    CGFloat offsetAdjustment = MAXFLOAT;
+    CGFloat horizontalCenter = proposedContentOffset.x + (CGRectGetWidth(self.collectionView.bounds) / 2.0);
+    
+    CGRect targetRect = CGRectMake(proposedContentOffset.x, 0.0, self.collectionView.bounds.size.width, self.collectionView.bounds.size.height);
+    NSArray* array = [self layoutAttributesForElementsInRect:targetRect];
+    
+    for (UICollectionViewLayoutAttributes* layoutAttributes in array) {
+        CGFloat itemHorizontalCenter = layoutAttributes.center.x;
+        if (ABS(itemHorizontalCenter - horizontalCenter) < ABS(offsetAdjustment)) {
+            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
+        }
+    }
+    return CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
 }
 
 @end
