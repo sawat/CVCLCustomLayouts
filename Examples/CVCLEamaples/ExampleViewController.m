@@ -11,7 +11,8 @@
 #import "MyHeaderView.h"
 #import "ExampleLayoutsDataSource.h"
 
-static NSInteger kInitialItemsInSection = 30;
+static NSInteger kInitialItemsInSection = 20;
+static NSInteger kNumberofSections = 4;
 
 @interface ExampleViewController () <UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *editModeButtons;
@@ -35,7 +36,7 @@ static NSInteger kInitialItemsInSection = 30;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.items = [NSMutableArray array];
-    for (int sec=0; sec<2; sec++) {
+    for (int sec=0; sec<kNumberofSections; sec++) {
         NSMutableArray *sectionItems = [NSMutableArray arrayWithCapacity:kInitialItemsInSection];
         for (int item = 0; item < kInitialItemsInSection; item++) {
             [sectionItems addObject:@(item)];

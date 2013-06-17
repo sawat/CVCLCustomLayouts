@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		781F1EA4176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 781F1EA3176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.m */; };
 		7827984D164A3994000E82DE /* CVCLRevolverLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7827984C164A3994000E82DE /* CVCLRevolverLayout.m */; };
 		785E2B74164CA89100DF48E1 /* ExampleLayoutsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B73164CA89100DF48E1 /* ExampleLayoutsDataSource.m */; };
 		785E2B77164CD64900DF48E1 /* CVCLHomeIconLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */; };
@@ -30,6 +31,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		781F1EA2176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVCLStickyHeaderFlowLayout.h; sourceTree = "<group>"; };
+		781F1EA3176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLStickyHeaderFlowLayout.m; sourceTree = "<group>"; };
 		7827984B164A3994000E82DE /* CVCLRevolverLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVCLRevolverLayout.h; sourceTree = "<group>"; };
 		7827984C164A3994000E82DE /* CVCLRevolverLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCLRevolverLayout.m; sourceTree = "<group>"; };
 		785E2B72164CA89100DF48E1 /* ExampleLayoutsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleLayoutsDataSource.h; sourceTree = "<group>"; };
@@ -155,6 +158,8 @@
 				87EB1F6B164983CF00452E64 /* CVCLCoverFlowLayout.m */,
 				785E2B75164CD64900DF48E1 /* CVCLHomeIconLayout.h */,
 				785E2B76164CD64900DF48E1 /* CVCLHomeIconLayout.m */,
+				781F1EA2176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.h */,
+				781F1EA3176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.m */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -237,6 +242,7 @@
 				785E2B7A164CDA8000DF48E1 /* MyHeaderView.m in Sources */,
 				785E2B7D164D0A9B00DF48E1 /* MyIconCell.m in Sources */,
 				87EB1F79164EC87F00452E64 /* ExampleViewController.m in Sources */,
+				781F1EA4176E9E7B00703188 /* CVCLStickyHeaderFlowLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
