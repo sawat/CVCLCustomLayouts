@@ -45,13 +45,14 @@ static NSString * const kCellIdentifier = @"cellId";
     layout.scrollDirection = scrollDirection;
     layout.itemSize =itemSize;
     layout.minimumInteritemSpacing = minimumLineSpacing;
+    layout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     
     if (scrollDirection == UICollectionViewScrollDirectionVertical) {
         layout.headerReferenceSize = CGSizeMake(320, 30);
         layout.footerReferenceSize = CGSizeMake(320, 60);
     } else {
-        layout.headerReferenceSize = CGSizeMake(44, 60);
-        layout.footerReferenceSize = CGSizeMake(44, 60);
+        layout.headerReferenceSize = CGSizeMake(40, 60);
+        layout.footerReferenceSize = CGSizeMake(40, 60);
     }
     return layout;
 }
@@ -71,7 +72,7 @@ static NSString * const kCellIdentifier = @"cellId";
         
         self.sections = @[
           @{kSectionTitle : @"FlowLayout",
-            kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal], kPaging:@YES}],
+            kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(145, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(105, 35) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal], kPaging:@YES}],
             },
           @{kSectionTitle : @"CoverFlow",
             kRows: @[ @{kRowTitle:@"CoverFlow 1", kLayout:[[CVCLCoverFlowLayout alloc] init]}, @{kRowTitle:@"CoverFlow 2", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(80, 200)]}, @{kRowTitle:@"CoverFlow 3", kLayout:[[CVCLCoverFlowLayout alloc] initWithCellSize:CGSizeMake(160, 100)]}, @{kRowTitle:@"CoverFlow with DecorationView", kLayout:layoutWithDeco}],
@@ -84,7 +85,7 @@ static NSString * const kCellIdentifier = @"cellId";
                       @{kRowTitle:@"Icons with Header/Footer", kLayout:iconLayout2, kCellIdentifier:@"IconCell", kPaging:@YES}],
             },
           @{kSectionTitle : @"Sticky Header FlowLayout",
-            kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(150, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical class:[CVCLStickyHeaderFlowLayout class]]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal class:[CVCLStickyHeaderFlowLayout class]], kPaging:@NO}],
+            kRows: @[ @{kRowTitle:@"Verical",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(93, 50) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionVertical class:[CVCLStickyHeaderFlowLayout class]]}, @{kRowTitle:@"Horizontal",  kLayout: [ExampleLayoutsDataSource flowLayoutWithItemSize:CGSizeMake(100, 100) minimumLineSpacing:10 scrollDirection:UICollectionViewScrollDirectionHorizontal class:[CVCLStickyHeaderFlowLayout class]], kPaging:@NO}],
             },
         ];
     }

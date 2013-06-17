@@ -12,7 +12,7 @@
 #import "ExampleLayoutsDataSource.h"
 
 static NSInteger kInitialItemsInSection = 20;
-static NSInteger kNumberofSections = 4;
+static NSInteger kNumberofSections = 3;
 
 @interface ExampleViewController () <UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *editModeButtons;

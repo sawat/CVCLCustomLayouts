@@ -47,11 +47,10 @@
     BOOL vert = self.scrollDirection == UICollectionViewScrollDirectionVertical;
     
     CGFloat nextSecOffset = CGFLOAT_MAX;
-    {
-        NSIndexPath *lastIP = [NSIndexPath indexPathForItem:MAX(0, [self.collectionView numberOfItemsInSection:maximumSection] -1) inSection:maximumSection];
-        
-        UICollectionViewLayoutAttributes *lastCellAttr = [self layoutAttributesForItemAtIndexPath:lastIP];
-        nextSecOffset = (vert ? CGRectGetMaxY(lastCellAttr.frame) : CGRectGetMaxX(lastCellAttr.frame)) + 1.0f;
+    if (self.collectionView.numberOfSections - 1 != maximumSection) {
+        NSIndexPath *nextSecIP = [NSIndexPath indexPathForItem:0 inSection:maximumSection+1];
+        UICollectionViewLayoutAttributes *nextHeaderAttr = [super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:nextSecIP];
+        nextSecOffset = vert ? nextHeaderAttr.frame.origin.y : nextHeaderAttr.frame.origin.x;
     }
     
     for (int sec = maximumSection; sec >= minimumSection; sec--) {
@@ -60,43 +59,28 @@
             NSIndexPath *ip = [NSIndexPath indexPathForItem:0 inSection:sec];
             
             at = [super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:ip];
-            at.zIndex = 1024;
-            CGRect frame = at.frame;
-            
-            if (vert) {
-                frame.origin.y = offset.y;
-                if (CGRectGetMaxY(frame) > nextSecOffset) {
-                    frame.origin.y -= CGRectGetMaxY(frame) - nextSecOffset;
-                }
-            } else {
-                frame.origin.x = offset.x;
-                if (CGRectGetMaxX(frame) > nextSecOffset) {
-                    frame.origin.x -= CGRectGetMaxX(frame) - nextSecOffset;
-                }
-            }
-            
-            at.frame = frame;
-            if (CGRectIntersectsRect(at.frame, rect)) {
-                [attrs addObject:at];
-            }
-            
-        } else {
-            at.zIndex = 1024;
-            CGRect frame = at.frame;
-            if (vert) {
-                if (frame.origin.y < offset.y) {
-                    frame.origin.y = offset.y;
-                }
-                nextSecOffset = MIN(nextSecOffset,frame.origin.y);
-            } else {
-                if (frame.origin.x < offset.x) {
-                    frame.origin.x = offset.x;
-                }
-                nextSecOffset = MIN(nextSecOffset,frame.origin.x);
-            }
-            at.frame = frame;
-            
+            [attrs addObject:at];
         }
+        at.zIndex = 1024;
+        CGRect frame = at.frame;
+        if (vert) {
+            if (frame.origin.y < offset.y) {
+                frame.origin.y = offset.y;
+            }
+            if (CGRectGetMaxY(frame) > nextSecOffset) {
+                frame.origin.y -= CGRectGetMaxY(frame) - nextSecOffset;
+            }
+            nextSecOffset = MIN(nextSecOffset,frame.origin.y);
+        } else {
+            if (frame.origin.x < offset.x) {
+                frame.origin.x = offset.x;
+            }
+            if (CGRectGetMaxX(frame) > nextSecOffset) {
+                frame.origin.x -= CGRectGetMaxX(frame) - nextSecOffset;
+            }
+            nextSecOffset = MIN(nextSecOffset,frame.origin.x);
+        }
+        at.frame = frame;
     }
     
     return attrs;
