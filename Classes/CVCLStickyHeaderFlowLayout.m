@@ -17,9 +17,10 @@
     return attr;
 }
 
+
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSMutableArray *attrs = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
-
+    
     CGPoint offset = self.collectionView.contentOffset;
     
     NSMutableDictionary *headerLayouts = [NSMutableDictionary dictionary];
@@ -33,7 +34,7 @@
         BOOL newSection = [headerLayouts objectForKey:@(indexPath.section)] == nil;
         minimumSection = MIN(minimumSection, currentSection);
         maximumSection = MAX(maximumSection, currentSection);
-
+        
         if (at.representedElementCategory == UICollectionElementCategorySupplementaryView
             && [at.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
             
@@ -43,25 +44,34 @@
         }
     }
     
-    CGFloat minimumOffset = CGFLOAT_MAX;
     BOOL vert = self.scrollDirection == UICollectionViewScrollDirectionVertical;
+    
+    CGFloat nextSecOffset = CGFLOAT_MAX;
+    {
+        NSIndexPath *lastIP = [NSIndexPath indexPathForItem:MAX(0, [self.collectionView numberOfItemsInSection:maximumSection] -1) inSection:maximumSection];
+        
+        UICollectionViewLayoutAttributes *lastCellAttr = [self layoutAttributesForItemAtIndexPath:lastIP];
+        nextSecOffset = (vert ? CGRectGetMaxY(lastCellAttr.frame) : CGRectGetMaxX(lastCellAttr.frame)) + 1.0f;
+    }
     
     for (int sec = maximumSection; sec >= minimumSection; sec--) {
         UICollectionViewLayoutAttributes * at = [headerLayouts objectForKey:@(sec)];
         if ([at isKindOfClass:[NSNull class]]) {
-            at = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:sec]];
+            NSIndexPath *ip = [NSIndexPath indexPathForItem:0 inSection:sec];
+            
+            at = [super layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:ip];
             at.zIndex = 1024;
             CGRect frame = at.frame;
             
             if (vert) {
                 frame.origin.y = offset.y;
-                if (CGRectGetMaxY(frame) > minimumOffset) {
-                    frame.origin.y -= CGRectGetMaxY(frame) - minimumOffset;
+                if (CGRectGetMaxY(frame) > nextSecOffset) {
+                    frame.origin.y -= CGRectGetMaxY(frame) - nextSecOffset;
                 }
             } else {
                 frame.origin.x = offset.x;
-                if (CGRectGetMaxX(frame) > minimumOffset) {
-                    frame.origin.x -= CGRectGetMaxX(frame) - minimumOffset;
+                if (CGRectGetMaxX(frame) > nextSecOffset) {
+                    frame.origin.x -= CGRectGetMaxX(frame) - nextSecOffset;
                 }
             }
             
@@ -69,7 +79,7 @@
             if (CGRectIntersectsRect(at.frame, rect)) {
                 [attrs addObject:at];
             }
-
+            
         } else {
             at.zIndex = 1024;
             CGRect frame = at.frame;
@@ -77,86 +87,21 @@
                 if (frame.origin.y < offset.y) {
                     frame.origin.y = offset.y;
                 }
-                minimumOffset = MIN(minimumOffset,frame.origin.y);
+                nextSecOffset = MIN(nextSecOffset,frame.origin.y);
             } else {
                 if (frame.origin.x < offset.x) {
                     frame.origin.x = offset.x;
                 }
-                minimumOffset = MIN(minimumOffset,frame.origin.x);
+                nextSecOffset = MIN(nextSecOffset,frame.origin.x);
             }
-            
             at.frame = frame;
+            
         }
     }
     
     return attrs;
 }
 
-//
-//- (NSArray *) layoutAttributesForElementsInRect:(CGRect)rect {
-//    
-//    NSMutableArray *answer = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
-//    UICollectionView * const cv = self.collectionView;
-//    CGPoint const contentOffset = cv.contentOffset;
-//    
-//    NSMutableIndexSet *missingSections = [NSMutableIndexSet indexSet];
-//    for (UICollectionViewLayoutAttributes *layoutAttributes in answer) {
-//        if (layoutAttributes.representedElementCategory == UICollectionElementCategoryCell) {
-//            [missingSections addIndex:layoutAttributes.indexPath.section];
-//        }
-//    }
-//    for (UICollectionViewLayoutAttributes *layoutAttributes in answer) {
-//        if ([layoutAttributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-//            [missingSections removeIndex:layoutAttributes.indexPath.section];
-//        }
-//    }
-//    
-//    [missingSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-//        
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:idx];
-//        
-//        UICollectionViewLayoutAttributes *layoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-//        
-//        [answer addObject:layoutAttributes];
-//        
-//    }];
-//    
-//    for (UICollectionViewLayoutAttributes *layoutAttributes in answer) {
-//        
-//        if ([layoutAttributes.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
-//            
-//            NSInteger section = layoutAttributes.indexPath.section;
-//            NSInteger numberOfItemsInSection = [cv numberOfItemsInSection:section];
-//            
-//            NSIndexPath *firstCellIndexPath = [NSIndexPath indexPathForItem:0 inSection:section];
-//            NSIndexPath *lastCellIndexPath = [NSIndexPath indexPathForItem:MAX(0, (numberOfItemsInSection - 1)) inSection:section];
-//            
-//            UICollectionViewLayoutAttributes *firstCellAttrs = [self layoutAttributesForItemAtIndexPath:firstCellIndexPath];
-//            UICollectionViewLayoutAttributes *lastCellAttrs = [self layoutAttributesForItemAtIndexPath:lastCellIndexPath];
-//            
-//            CGFloat headerHeight = CGRectGetHeight(layoutAttributes.frame);
-//            CGPoint origin = layoutAttributes.frame.origin;
-//            origin.y = MIN(
-//                           MAX(
-//                               contentOffset.y,
-//                               (CGRectGetMinY(firstCellAttrs.frame) - headerHeight)
-//                               ),
-//                           (CGRectGetMaxY(lastCellAttrs.frame) - headerHeight)
-//                           );
-//            
-//            layoutAttributes.zIndex = 1024;
-//            layoutAttributes.frame = (CGRect){
-//                .origin = origin,
-//                .size = layoutAttributes.frame.size
-//            };
-//            
-//        }
-//        
-//    }
-//    
-//    return answer;
-//    
-//}
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     return YES;
